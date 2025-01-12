@@ -11,8 +11,11 @@
   "license": "ISC",
   "dependencies": {
     "cookie-parse": "^0.4.0",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "express": "^4.21.2",
-    "mongoose": "^8.9.3"
+    "ioredis": "^5.4.2",
+    "mongoose": "^8.9.3",
+    "morgan": "^1.10.0"
   }
 }
