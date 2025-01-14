@@ -25,7 +25,7 @@ function UserAuth({children}) {
             },
         })
         .then((res) => {
-            setUser(res.data.data);
+            setUser(res.data.user);
             setLoading(false);
         })
         .catch((err) => {

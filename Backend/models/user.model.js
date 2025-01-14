@@ -20,6 +20,26 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    profileimg: {
+        type: String,
+        default: null
+    },
+    workspace: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Workspace",
+        default: null
+    },
+    tasks: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Task",
+        default: null
+    },
+    productivity :{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Productivity",
+        default: null
+    }
+
 }, { timestamps: true });
 
 const validateUserModel = (data) => {

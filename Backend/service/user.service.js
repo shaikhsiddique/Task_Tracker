@@ -2,9 +2,9 @@ const {userModel} = require('../models/user.model');
 
 
 const createUserService = async (data) => {
-    const { username, email, phone, password } = data;
+    const { username, email, phone, password , profileimg } = data;
 
-    if (!username || !email || !phone || !password) {
+    if (!username || !email || !phone || !password || !profileimg) {
         throw new Error('All fields are required');
     }
 
@@ -14,6 +14,7 @@ const createUserService = async (data) => {
             email,
             phone,
             password,
+            profileimg
         });
         return user;
     } catch (err) {

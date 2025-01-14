@@ -1,10 +1,11 @@
 const {Router} = require('express');
 const router = Router();
-const {loginController,signupController,profileController,logoutController} = require('../controller/user.controller');
+const {loginController,signupController,profileController,logoutController, set_profileImgController} = require('../controller/user.controller');
 const auth = require('../middleware/userAuth');
+const upload = require('../config/multer');
 
 
-router.post('/signup',async (req,res)=>{
+router.post('/signup',upload ,async (req,res)=>{
     signupController(req,res);
 });
 

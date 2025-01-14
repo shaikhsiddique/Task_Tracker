@@ -9,10 +9,18 @@ const signupController = async (req, res) => {
 
     try {
         const { error } = validateUserModel(req.body);
+        let imageUrl;
         if (error) return res.status(400).json({ error: error.details[0].message });
 
         const { username, email, phone, password } = req.body;
 
+        
+    if (req.file) {
+        imageUrl = req.file.publicUrl;
+    }
+    else{
+        imageUrl= "https://storage.googleapis.com/ecommerce-ab165.appspot.com/default-profile19460541f53.png"
+    }
         const existingUser = await findUserByEmail(email);
 
         if(existingUser){
@@ -21,7 +29,7 @@ const signupController = async (req, res) => {
 
         const hashedPassword = await hashPassword(password);
 
-        const user = await createUserService({ username, email, phone, password:hashedPassword });
+        const user = await createUserService({ username, email, phone, password:hashedPassword ,profileimg:imageUrl });
 
         const token = await createToken({ id: user._id, email: user.email });
 
@@ -31,8 +39,8 @@ const signupController = async (req, res) => {
             sameSite: "strict",
             maxAge: 3 * 60 * 60 * 1000,
           });
-
-        res.status(201).json({ message: 'User created successfully', user: { id: user._id, username, email, phone },token });
+          
+        res.status(201).json({ message: 'User created successfully', user: { ...user.toObject(), password: undefined }, token });
     } catch (err) {
         console.log(err);
         res.status(500).json({ error: 'An error occurred during registration', details: err.message });
@@ -70,12 +78,7 @@ const loginController = async (req, res) => {
 
         res.status(200).json({
             message: 'Login successful',
-            user: {
-                id: user._id,
-                username: user.username,
-                email: user.email,
-                phone: user.phone,
-            },
+            user: { ...user.toObject(), password: undefined },
             token,
         });
     } catch (error) {
@@ -97,14 +100,7 @@ const profileController = (req, res) => {
 
         res.status(200).json({
             message: 'User profile fetched successfully',
-            user: {
-                id: user.id,
-                username: user.username,
-                email: user.email,
-                phone: user.phone,
-                createdAt: user.createdAt,
-                updatedAt: user.updatedAt,
-            },
+            user: { ...user.toObject(), password: undefined }
         });
     } catch (error) {
         console.error(error);
@@ -140,5 +136,6 @@ const logoutController = async (req, res) => {
         });
     }
 };
+
 
 module.exports = {loginController,signupController,profileController,logoutController};
