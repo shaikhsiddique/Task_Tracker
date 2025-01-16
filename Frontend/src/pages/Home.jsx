@@ -1,17 +1,19 @@
-import {React,useContext} from 'react'
+import {React,useContext, useState} from 'react'
 import Navbar from '../components/Navbar'
 import { UserContext } from '../context/UserContext.jsx';
-import Task_Container from '../components/Task-Container.jsx';
-import Side_Panel from '../components/Side-Panel.jsx';
+import Task from '../components/Task.jsx';
+import Today_Tasks from '../components/Today-Tasks.jsx';
 
-function Home() {
+function Home({children}) {
   const {user,setUser} = useContext(UserContext);
+ 
 
+  
   return (
     <div className='h-screen w-full flex items-center justify-center bg-zinc-800'>
       <div className='w-[95%] h-[93%] bg-zinc-400 flex'>
-      <Navbar user={user}/>
-      <Side_Panel/>
+      <Navbar user={user} />
+        {children}
       </div>
     </div>
   )
