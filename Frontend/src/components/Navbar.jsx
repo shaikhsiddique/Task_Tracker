@@ -110,13 +110,13 @@ function Navbar({ user }) {
       <div className="flex flex-col items-start space-y-0 mt-3">
         <h3 className="text-md font-semibold">Workspace Management</h3>
         <Link
-          to="/workspace/add"
+          to="/workspace/"
           className={`flex items-center justify-start gap-2 w-[99%] p-1 rounded-md cursor-pointer ${
-            isActive("/workspace/add") ? "bg-red-500 text-white" : "hover:bg-red-400"
+            isActive("/workspace/") ? "bg-red-500 text-white" : "hover:bg-red-400"
           }`}
         >
           <i className="ri-group-line text-xl rounded-full px-1"></i>
-          <p className="text-md font-normal">Add workspace</p>
+          <p className="text-md font-normal">Workspace</p>
         </Link>
         <Link
           to="/workspace/member-of"
@@ -128,13 +128,22 @@ function Navbar({ user }) {
           <p className="text-md">Member of</p>
         </Link>
         <Link
-          to="/workspace/join"
+          to="/workspace/admin-of"
+          className={`flex items-center justify-start gap-2 w-[99%] p-[3px] -my-1 rounded-md cursor-pointer ${
+            isActive("/workspace/admin-of") ? "bg-red-500 text-white" : "hover:bg-red-400"
+          }`}
+        >
+          <i className="ri-admin-line text-xl rounded-full px-1"></i>
+          <p className="text-md">Admin of</p>
+        </Link>
+        <Link
+          to="/workspace/join-workspace"
           className={`flex items-center justify-start gap-2 w-[99%] p-[3px] -my-1 rounded-md cursor-pointer ${
             isActive("/workspace/join") ? "bg-red-500 text-white" : "hover:bg-red-400"
           }`}
         >
           <i className="ri-user-add-line text-xl rounded-full px-1"></i>
-          <p className="text-md">Join Workspace</p>
+          <p className="text-md">Collaboration</p>
         </Link>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import React from "react";
-import Task from "./Task";
+import Task from "../Task";
 
 function Today_Tasks() {
   return (

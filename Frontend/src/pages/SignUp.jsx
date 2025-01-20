@@ -42,7 +42,7 @@ function SignUp() {
   
     if (imagePreview) {
       const imageFile = e.target.imageUpload.files[0]; 
-      formDataToSend.append('profile', imageFile);
+      formDataToSend.append('file', imageFile);
     }
 
     axios

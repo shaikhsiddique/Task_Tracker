@@ -8,6 +8,8 @@ const morgan = require('morgan');
 
 
 const userRouter = require('./routes/user.routes');
+const taskRouter = require('./routes/task.routes')
+
 
 
 
@@ -22,6 +24,7 @@ db();
 
 
 app.use("/user",userRouter);
+app.use("/task",taskRouter);
 
 
 module.exports = app;

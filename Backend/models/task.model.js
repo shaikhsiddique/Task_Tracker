@@ -36,6 +36,9 @@ const taskSchema = new mongoose.Schema({
         type: String,
         enum: ['pending', 'in-progress', 'completed'],
         default: 'pending'
+    },
+    tag : {
+        type:String,
     }
 });
 
@@ -45,10 +48,10 @@ const validateTask = (task) => {
     const schema = Joi.object({
         name: Joi.string().required(),
         description: Joi.string().required(),
-        assignedTo: Joi.string().required(),
-        assignedBy: Joi.string().required(),
+        assignedTo: Joi.required(),
         assignedAt: Joi.date().default(Date.now),
-        deadline: Joi.date().required(),
+        deadline: Joi.required(),
+        tag: Joi.string().required(),
         attachment: Joi.string().allow(null),
         status: Joi.string().valid('pending', 'in-progress', 'completed').default('pending')
     });

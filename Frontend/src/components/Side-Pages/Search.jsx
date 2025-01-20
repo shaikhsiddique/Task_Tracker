@@ -1,5 +1,5 @@
 import React from "react";
-import Task from "./Task";
+import Task from "../Task";
 
 function Search() {
   return (
@@ -19,16 +19,19 @@ function Search() {
           <input
             type="text"
             placeholder="Enter Task Name"
-            className="w-full max-w-md p-2 border rounded-md outline-none focus:ring-2 focus:ring-green-500 text-gray-700"
+            className="w-full max-w-md p-2 border rounded-md outline-none focus:ring-2 focus:ring-red-500 text-gray-700"
           />
-          <button className="px-4 py-2 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700 transition duration-300">
+          <button className="px-4 py-2 bg-red-600 text-white font-semibold rounded-md hover:bg-green-700 transition duration-300">
             Search
           </button>
         </div>
 
         {/* Tasks Section */}
         <h2 className="text-lg font-bold text-gray-800 mb-4">Tasks</h2>
-        <div className="">
+        <div className="max-h-72 overflow-y-auto">
+        <Task />
+          <Task />
+          <Task />
           <Task />
           <Task />
           <Task />

@@ -61,8 +61,7 @@ const loginController = async (req, res) => {
         }
 
         const isPasswordValid = await comparePassword(password, user.password);
-        console.log(password)
-        console.log(user.password);
+        
         if (!isPasswordValid) {
             return res.status(401).json({ error: 'Invalid Credentials' });
         }
