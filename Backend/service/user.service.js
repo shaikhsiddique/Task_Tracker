@@ -42,7 +42,6 @@ const findAllUsers = async () => {
 
 const addWorkspace = async (userId, workspaceId) => {
     try {
-        console.log(userId, workspaceId)
         if (!userId || !workspaceId) {
             throw new Error("User ID and Workspace ID are required");
         }
