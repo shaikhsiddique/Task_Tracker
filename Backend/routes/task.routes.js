@@ -15,7 +15,7 @@ router.post("/edit/:id",auth,upload, async (req,res)=>{
 })
 
 router.delete("/delete/:id",auth, async (req,res)=>{
-    console.log("delete fired")
+   
     taskController.deleteTaskController(req,res);
 })
 

@@ -31,7 +31,6 @@ const findUserByEmail = async (email) => {
     }
 };
 
-
 const findAllUsers = async () => {
     try {
         const users = await userModel.find();
@@ -41,4 +40,27 @@ const findAllUsers = async () => {
     }
 };
 
-module.exports = { createUserService, findUserByEmail, findAllUsers };
+const addWorkspace = async (userId, workspaceId) => {
+    try {
+        if (!userId || !workspaceId) {
+            throw new Error("User ID and Workspace ID are required");
+        }
+
+        let user = await userModel.findById(userId);
+        if (!user) {
+            throw new Error("User not found");
+        }
+
+        if (!user.workspace.includes(workspaceId)) {
+            user.workspace.push(workspaceId);
+            await user.save();
+        }
+
+        return user;
+    } catch (err) {
+        console.error("Error adding workspace:", err);
+        throw new Error("Error adding workspace: " + err.message);
+    }
+};
+
+module.exports = { createUserService, findUserByEmail, findAllUsers , addWorkspace };

@@ -87,7 +87,6 @@ const editTaskController = async (req, res) => {
 
 const deleteTaskController = async (req, res) => {
     try {
-        console.log("delete fired")
         const { id } = req.params;
         const task = await taskService.findById(id);
 

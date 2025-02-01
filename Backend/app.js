@@ -9,6 +9,7 @@ const morgan = require('morgan');
 
 const userRouter = require('./routes/user.routes');
 const taskRouter = require('./routes/task.routes')
+const workspaceRouter = require('./routes/workspace.routes');
 
 
 
@@ -25,6 +26,7 @@ db();
 
 app.use("/user",userRouter);
 app.use("/task",taskRouter);
+app.use('/workspace',workspaceRouter)
 
 
 module.exports = app;
