@@ -1,7 +1,34 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Task from "../Task";
+import { UserContext } from "../../context/UserContext";
+import axios from "../../config/axios";
 
 function Search() {
+  const { user } = useContext(UserContext);
+  const [tasks, setTasks] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  let token = localStorage.getItem("Auth-Token");
+
+  useEffect(() => {
+    axios
+      .get("/task/all", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        setTasks(res.data.task);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [token, user]);
+
+  const filteredTasks = tasks.filter(task =>
+    task.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="h-full w-full bg-[#FFFFFF] flex items-center justify-center overflow-y-auto">
       <div className="w-full max-w-5xl px-6 pb-8">
@@ -19,22 +46,22 @@ function Search() {
           <input
             type="text"
             placeholder="Enter Task Name"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full max-w-md p-2 border rounded-md outline-none focus:ring-2 focus:ring-red-500 text-gray-700"
           />
-          <button className="px-4 py-2 bg-red-600 text-white font-semibold rounded-md hover:bg-green-700 transition duration-300">
-            Search
-          </button>
         </div>
 
         {/* Tasks Section */}
         <h2 className="text-lg font-bold text-gray-800 mb-4">Tasks</h2>
         <div className="max-h-72 overflow-y-auto">
-        <Task />
-          <Task />
-          <Task />
-          <Task />
-          <Task />
-          <Task />
+          {filteredTasks.length > 0 ? (
+            filteredTasks.slice(0, 5).map((task, index) => (
+              <Task key={index} task={task} />
+            ))
+          ) : (
+            <p className="text-gray-600">No tasks found</p>
+          )}
         </div>
       </div>
     </div>

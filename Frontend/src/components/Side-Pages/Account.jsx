@@ -4,6 +4,8 @@ import { UserContext } from "../../context/UserContext";
 function Account() {
   const { user } = useContext(UserContext);
 
+  
+
   // Format the date to display as "Joined on"
   const formatDate = (isoString) =>
     new Date(isoString).toLocaleDateString("en-US", {
@@ -49,13 +51,13 @@ function Account() {
           {/* Active Tasks */}
           <div className="flex flex-col items-center bg-green-100 p-4 rounded-lg shadow">
             <h3 className="text-lg font-semibold text-green-600">Active WorkSpace's</h3>
-            <p className="text-2xl font-bold text-green-700">10</p>
+            <p className="text-2xl font-bold text-green-700">{user.workspace.length}</p>
           </div>
 
           {/* Accepted Tasks */}
           <div className="flex flex-col items-center bg-blue-100 p-4 rounded-lg shadow">
             <h3 className="text-lg font-semibold text-blue-600">Assigned Tasks</h3>
-            <p className="text-2xl font-bold text-blue-700">5</p>
+            <p className="text-2xl font-bold text-blue-700">{user.tasks.length}</p>
           </div>
 
           {/* Completed Tasks */}

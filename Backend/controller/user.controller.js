@@ -14,9 +14,8 @@ const signupController = async (req, res) => {
 
         const { username, email, phone, password } = req.body;
 
-        
-    if (req.file) {
-        imageUrl = req.file.publicUrl;
+    if (req.files) {
+        imageUrl = req.files[0].publicUrl;
     }
     else{
         imageUrl= "https://storage.googleapis.com/ecommerce-ab165.appspot.com/default-profile19460541f53.png"
@@ -85,7 +84,7 @@ const loginController = async (req, res) => {
     }
 };
 
-const profileController = (req, res) => {
+const profileController = async (req, res) => {
     try {
         const user = req.user;
 
@@ -93,19 +92,25 @@ const profileController = (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        if (!user.username || !user.email || !user.phone) {
+        const userdata = await findUserByEmail(user.email).then(userdata => userdata.populate('tasks'));
+        
+
+        if (!userdata.username || !userdata.email || !userdata.phone) {
             return res.status(400).json({ error: 'Incomplete user profile data' });
         }
 
+        delete userdata.password;
+
         res.status(200).json({
             message: 'User profile fetched successfully',
-            user: { ...user.toObject(), password: undefined }
+            user: userdata
         });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+
 
 const logoutController = async (req, res) => {
     try {

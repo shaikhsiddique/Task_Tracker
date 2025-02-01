@@ -31,6 +31,7 @@ const findUserByEmail = async (email) => {
     }
 };
 
+
 const findAllUsers = async () => {
     try {
         const users = await userModel.find();
