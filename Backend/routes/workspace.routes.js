@@ -13,7 +13,7 @@ router.post('/create',auth,async (req,res)=>{
     workspaceController.createWorkspaceController(req,res);
 })
 
-router.post('/add-member',async (req,res)=>{
+router.post('/add-member',auth,async (req,res)=>{
     workspaceController.addMembersController(req,res);
 })
 router.delete('/:id',auth,async (req,res)=>{

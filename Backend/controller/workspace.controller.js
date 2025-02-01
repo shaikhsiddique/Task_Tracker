@@ -4,14 +4,14 @@ const userService = require('../service/user.service');
 
 const createWorkspaceController = async (req, res) => {
     try {
-        let { name } = req.body;
+        let {  name,description,tag } = req.body;
         let admin = req.user;
 
         if (!name || !admin) {
             return res.status(400).json({ message: "Name and Admin are required" });
         }
 
-        const { error } = validateWorkspace({ name, admin: admin._id });
+        const { error } = validateWorkspace({ name, admin: admin._id,description,tag });
         if (error) {
             return res.status(400).json({ error: error.details[0].message });
         }
@@ -21,7 +21,7 @@ const createWorkspaceController = async (req, res) => {
             return res.status(400).json({ error: "Workspace with this name already exists" });
         }
 
-        const workspace = await workspaceService.create(name, admin._id);
+        const workspace = await workspaceService.create(name, admin._id,description,tag,);
         await userService.addWorkspace(admin._id, workspace._id);
         
         const addMemberResult = await workspaceService.addMember(workspace._id, [admin._id]);

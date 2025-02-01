@@ -18,6 +18,14 @@ const workspaceSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    description : {
+        type: String,
+        required: true
+    },
+    tag : {
+        type: String,
+        required: true
+    },
     members: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
@@ -39,6 +47,8 @@ const workspaceModel = mongoose.model('Workspace', workspaceSchema);
 const validateWorkspace = (workspace) => {
     const schema = Joi.object({
         name: Joi.string().required(),
+        description: Joi.string().required(),
+        tag : Joi.string().required(),
         members: Joi.array().items(Joi.string()).optional(),
         admin: Joi.required(),
         attachment: Joi.string().allow(null).optional(),

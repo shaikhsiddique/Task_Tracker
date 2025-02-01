@@ -1,13 +1,31 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Workspace from '../Workspace'
 import Add_Workspace from './Add-Workspace'
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
+import axois from '../../config/axios';
+import { useNavigate } from 'react-router-dom';
 
 function All_Workspace() {
 
   const addWorkSpace = useRef(null);
-  const [showAddWorkspace, setshowAddWorkspace] = useState()
+  const [showAddWorkspace, setshowAddWorkspace] = useState();
+  const token = localStorage.getItem("Auth-Token");
+  const [workspaces, setWorkspaces] = useState([]);
+  const navigate = useNavigate();
+
+
+  useEffect(()=>{
+    axois.get('/workspace/all',{
+      headers: {
+        Authorization: `Bearer ${token}`,
+    },
+    }).then((res)=>{
+      setWorkspaces(res.data);
+    }).catch((err)=>{
+      console.log(err)
+    })
+  },[token,showAddWorkspace])
 
   useGSAP(() => {
     if (showAddWorkspace) {
@@ -41,10 +59,9 @@ function All_Workspace() {
         </h1>
 
         <div className="flex flex-col max-h-80 overflow-y-auto">
-        <Workspace/>
-          <Workspace/>
-          <Workspace/>
-          <Workspace/>
+        {workspaces.map((workspace,index)=>{
+          return <Workspace key={index} workspace={workspace}/>
+        })} 
          
         </div>
       </div>

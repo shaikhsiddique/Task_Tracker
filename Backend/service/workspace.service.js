@@ -39,12 +39,12 @@ const getAll = async () => {
     }
 };
 
-const create = async (name, admin) => {
+const create = async (name, admin,description,tag) => {
     try {
         if (!name || !admin) {
             return { status: 400, json: { message: "Name and Admin are required" } };
         }
-        let workspace = await workspaceModel.create({ name, admin });
+        let workspace = await workspaceModel.create({ name, admin ,description,tag });
         return workspace
     } catch (error) {
         return { status: 500, json: { message: "Internal server error", error } };
@@ -71,7 +71,6 @@ const addMember = async (workspaceId, memberIds) => {
         if (!workspaceId || !Array.isArray(memberIds) || memberIds.length === 0) {
             return { status: 400, json: { message: "Workspace ID and an array of Member IDs are required" } };
         }
-
         let workspace = await workspaceModel.findById(workspaceId);
         if (!workspace) {
             return { status: 404, json: { message: "Workspace not found" } };
