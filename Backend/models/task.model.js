@@ -34,7 +34,7 @@ const taskSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['pending', 'in-progress', 'completed'],
+        enum: ['pending', 'in-complete', 'completed'],
         default: 'pending'
     },
     tag : {
@@ -42,7 +42,7 @@ const taskSchema = new mongoose.Schema({
     }
 });
 
-const Task = mongoose.model('Task', taskSchema);
+const taskModel = mongoose.model('Task', taskSchema);
 
 const validateTask = (task) => {
     const schema = Joi.object({
@@ -58,4 +58,4 @@ const validateTask = (task) => {
     return schema.validate(task);
 };
 
-module.exports = { Task, validateTask }; 
+module.exports = { taskModel, validateTask }; 

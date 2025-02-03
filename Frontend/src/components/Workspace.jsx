@@ -39,14 +39,23 @@ function Workspace({ workspace }) {
                 ></Link>
               </div>
             )}
-            {ismember && (
+            {ismember ? <>
               <div className="flex gap-4">
                 <Link
                   to={`/workspace/${workspace._id}`}
                   className="ri-user-community-fill text-blue-500 text-xl"
                 ></Link>
               </div>
-            )}
+            </> : 
+              <>
+              <div className="flex gap-4">
+                <Link
+                  to={`/workspace/join/${workspace._id}`}
+                  className="ri-add-box-line text-blue-500 text-xl"
+                ></Link>
+              </div>
+              </>
+            }
           </div>
         </div>
       </div>

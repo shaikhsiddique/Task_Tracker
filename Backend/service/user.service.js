@@ -63,4 +63,31 @@ const addWorkspace = async (userId, workspaceId) => {
     }
 };
 
-module.exports = { createUserService, findUserByEmail, findAllUsers , addWorkspace };
+const removeWorkspace = async (userId, workspaceId) => {
+    try {
+        if (!userId || !workspaceId) {
+            throw new Error("User ID and Workspace ID are required");
+        }
+
+        let user = await userModel.findById(userId);
+        if (!user) {
+            throw new Error("User not found");
+        }
+
+        const workspaceIndex = user.workspace.indexOf(workspaceId);
+        if (workspaceIndex === -1) {
+            throw new Error("Workspace not found in user's list");
+        }
+
+        user.workspace.splice(workspaceIndex, 1);
+        await user.save();
+
+        return user;
+    } catch (err) {
+        console.error("Error removing workspace:", err);
+        throw new Error("Error removing workspace: " + err.message);
+    }
+};
+
+
+module.exports = { createUserService, findUserByEmail, findAllUsers , addWorkspace ,removeWorkspace };

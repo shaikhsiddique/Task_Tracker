@@ -5,7 +5,7 @@ function Account() {
   const { user } = useContext(UserContext);
 
   
-  console.log(user);
+
   // Format the date to display as "Joined on"
   const formatDate = (isoString) =>
     new Date(isoString).toLocaleDateString("en-US", {

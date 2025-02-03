@@ -2,7 +2,7 @@ const { userModel, validateUserModel } = require('../models/user.model');
 const  redisClient  = require('../service/redis.service');
 const  { hashPassword, comparePassword } = require('../utils/hash-password');
 const { createToken, verifyToken } = require('../utils/jwt');
-const { createUserService, findUserByEmail, findAllUsers } = require('../service/user.service');
+const userService = require('../service/user.service');
 
 
 const signupController = async (req, res) => {
@@ -28,7 +28,7 @@ const signupController = async (req, res) => {
 
         const hashedPassword = await hashPassword(password);
 
-        const user = await createUserService({ username, email, phone, password:hashedPassword ,profileimg:imageUrl });
+        const user = await userService.createUserService({ username, email, phone, password:hashedPassword ,profileimg:imageUrl });
 
         const token = await createToken({ id: user._id, email: user.email });
 
@@ -54,7 +54,7 @@ const loginController = async (req, res) => {
             return res.status(400).json({ error: 'Email and password are required' });
         }
 
-        const user = await userModel.findOne({ email });
+        const user = await userService.findUserByEmail(email)
         if (!user) {
             return res.status(401).json({ error: 'Invalid Credentials' });
         }
@@ -92,7 +92,7 @@ const profileController = async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        const userdata = await findUserByEmail(user.email).then(userdata => userdata.populate('tasks'));
+        const userdata = await userService.findUserByEmail(user.email).then(userdata => userdata.populate('tasks'));
         
 
         if (!userdata.username || !userdata.email || !userdata.phone) {
@@ -141,5 +141,19 @@ const logoutController = async (req, res) => {
     }
 };
 
+const getAllUserController = async (req, res) => {
+    try {
+        const loggedInUser = req.user; 
+        const allUsers = await userService.findAllUsers();
 
-module.exports = {loginController,signupController,profileController,logoutController};
+        // Filter out the logged-in user
+        const filteredUsers = allUsers.filter(user => user._id.toString() !== loggedInUser._id.toString());
+
+        res.json({ success: true, users: filteredUsers });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Internal Server Error", error: error.message });
+    }
+};
+
+
+module.exports = {loginController,signupController,profileController,logoutController,getAllUserController};

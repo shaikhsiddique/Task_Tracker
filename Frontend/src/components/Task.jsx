@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import moment from "moment-timezone";
+import axios from "../config/axios";
 
-function Task({ task }) {
- 
+function Task(props) {
+  const [task, setTask] = useState(props.task);
+  const token = localStorage.getItem("Auth-Token");
+
+  console.log(task);
+
   const formatDate = (isoString) =>
     new Date(isoString).toLocaleDateString("en-US", {
       year: "numeric",
@@ -11,21 +15,45 @@ function Task({ task }) {
       day: "numeric",
     });
 
-  // Generate a random color
   const randomColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
+
+  const markComplete = () => {
+    axios
+      .post(
+        `/task/mark-complete/${task._id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => {
+        setTask(res.data.task);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <div className="task border-t border-b">
       <div className="flex items-center justify-between">
         <div className="flex items-center justify-between py-2 gap-1">
           <div
-            className="rounded-full w-4 h-4 border-2 border-black "
-            style={{ borderColor: randomColor }}
+            onClick={markComplete}
+            className="rounded-full w-4 h-4 border-2 mt-[2px] "
+            style={{
+              borderColor: task.status === "completed" ? randomColor : "black",
+              backgroundColor: task.status === "completed" ? randomColor : "transparent",
+            }}
           ></div>
           <p className="text-xl font-mono">{task.name}</p>
         </div>
         <div className="flex gap-5">
-          <Link to={task.attachment} className="ri-file-list-3-line"></Link>
+          {task.attachment && (
+            <Link to={task.attachment} className="ri-file-list-3-line"></Link>
+          )}
           {task.assignedBy === task.assignedTo ? (
             <>
               <Link

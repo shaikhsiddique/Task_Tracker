@@ -74,16 +74,37 @@ const addMembersController = async (req, res) => {
             return res.status(400).json({ message: "Workspace ID and an array of Member IDs are required" });
         }
         const result = await workspaceService.addMember(workspaceId, memberIds);
+        memberIds.forEach(async (memberId)=>{
+            await userService.addWorkspace(memberId, workspaceId);
+        })
         return res.status(result.status).json(result.json);
     } catch (error) {
         return res.status(500).json({ message: "Internal server error", error });
     }
 };
 
+const removeMemberController = async (req,res) => {
+    try {
+        const { workspaceId, memberId } = req.body;
+        if (!workspaceId ||! memberId) {
+            return res.status(400).json({ message: "Workspace ID and an array of Member IDs are required" });
+        }
+        const result = await workspaceService.removeMember(workspaceId, memberId);
+        await userService.removeWorkspace(memberId,workspaceId);
+        return res.status(result.status).json(result.json);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: "Internal server error", error });
+    }
+
+
+}
+
 module.exports = { 
     createWorkspaceController, 
     getWorkspaceByIdController, 
     getAllWorkspacesController, 
     deleteWorkspaceController, 
-    addMembersController 
+    addMembersController,
+    removeMemberController 
 };

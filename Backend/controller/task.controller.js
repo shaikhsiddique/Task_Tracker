@@ -1,4 +1,4 @@
-const { Task, validateTask } = require('../models/task.model');
+const {  validateTask } = require('../models/task.model');
 const { userModel } = require('../models/user.model');
 const taskService = require('../service/task.service');
 
@@ -34,7 +34,7 @@ const createTaskController = async (req, res) => {
         }
 
         const task = await taskService.create(data);
-        let user = await userModel.findById(req.user._id);
+        let user = await userModel.findById(assignedTo);
         user.tasks.push(task._id);
         await user.save();
 
@@ -174,6 +174,21 @@ const getUpcomingTasksController = async (req, res) => {
     }
 };
 
+const markCompleteTaskController = async (req, res) => {
+    try {
+        let { id } = req.params;
+        let userId = req.user._id;
+        if (!id) return res.status(400).json({ success: false, message: "ID is required" });
+        
+        let task = await taskService.markComplete(id,userId);
+        if (!task) return res.status(404).json({ success: false, message: "Task not found" });
+        
+        return res.status(200).json({ success: true, message: "Task marked as completed", task });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
 
 
-module.exports = { createTaskController , editTaskController , deleteTaskController ,getAllTaskController ,getByIdTaskController , getTodayTaskController , getUpcomingTasksController };
+module.exports = { createTaskController , editTaskController , deleteTaskController ,getAllTaskController ,getByIdTaskController , getTodayTaskController , getUpcomingTasksController,markCompleteTaskController };

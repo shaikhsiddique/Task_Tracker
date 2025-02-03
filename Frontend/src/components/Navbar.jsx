@@ -88,15 +88,6 @@ function Navbar({ user }) {
           <p className="text-md font-normal">Add task</p>
         </Link>
         <Link
-          to="/task/edit-task"
-          className={`flex items-center justify-start gap-2 w-[99%] p-[3px] -my-1 rounded-md cursor-pointer ${
-            isActive("/task/edit-task") ? "bg-red-500 text-white" : "hover:bg-red-400"
-          }`}
-        >
-          <i className="ri-edit-2-fill text-xl rounded-full px-1"></i>
-          <p className="text-md">Edit task</p>
-        </Link>
-        <Link
           to="/task/personal-task"
           className={`flex items-center justify-start gap-2 w-[99%] p-[3px] -my-1 rounded-md cursor-pointer ${
             isActive("/task/personal-task") ? "bg-red-500 text-white" : "hover:bg-red-400"
