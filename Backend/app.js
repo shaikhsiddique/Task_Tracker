@@ -11,6 +11,7 @@ const userRouter = require('./routes/user.routes');
 const taskRouter = require('./routes/task.routes')
 const workspaceRouter = require('./routes/workspace.routes');
 
+const { updateTaskStatus } = require('./config/deadline');
 
 
 
@@ -21,6 +22,7 @@ app.use(cors());
 app.use(cookie_parser());
 
 db();
+updateTaskStatus();
 
 
 

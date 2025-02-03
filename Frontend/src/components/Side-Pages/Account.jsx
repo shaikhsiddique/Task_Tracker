@@ -1,10 +1,24 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../context/UserContext";
 
 function Account() {
   const { user } = useContext(UserContext);
+  const [activeTask, setActiveTask] = useState([]);
+  const [completedTask, setCompletedTask] = useState([]);
+  const [incompleteTask, setIncompleteTask] = useState([]);
 
-  
+  useEffect(() => {
+    if (user.tasks) {
+      // Filter tasks by status
+      const active = user.tasks.filter((task) => task.status === 'pending');
+      const completed = user.tasks.filter((task) => task.status === 'completed');
+      const incomplete = user.tasks.filter((task) => task.status === 'in-complete');
+      
+      setActiveTask(active);
+      setCompletedTask(completed);
+      setIncompleteTask(incomplete);
+    }
+  }, [user]); // Dependency on 'user', so it runs when the user data changes
 
   // Format the date to display as "Joined on"
   const formatDate = (isoString) =>
@@ -48,13 +62,13 @@ function Account() {
 
         {/* Task Statistics */}
         <div className="grid grid-cols-2 gap-6">
-          {/* Active Tasks */}
+          {/* Active Workspaces */}
           <div className="flex flex-col items-center bg-green-100 p-4 rounded-lg shadow">
             <h3 className="text-lg font-semibold text-green-600">Active WorkSpace's</h3>
             <p className="text-2xl font-bold text-green-700">{user.workspace.length}</p>
           </div>
 
-          {/* Accepted Tasks */}
+          {/* Assigned Tasks */}
           <div className="flex flex-col items-center bg-blue-100 p-4 rounded-lg shadow">
             <h3 className="text-lg font-semibold text-blue-600">Assigned Tasks</h3>
             <p className="text-2xl font-bold text-blue-700">{user.tasks.length}</p>
@@ -63,13 +77,13 @@ function Account() {
           {/* Completed Tasks */}
           <div className="flex flex-col items-center bg-purple-100 p-4 rounded-lg shadow">
             <h3 className="text-lg font-semibold text-purple-600">Completed Tasks</h3>
-            <p className="text-2xl font-bold text-purple-700">7</p>
+            <p className="text-2xl font-bold text-purple-700">{completedTask.length}</p>
           </div>
 
           {/* Incomplete Tasks */}
           <div className="flex flex-col items-center bg-red-100 p-4 rounded-lg shadow">
             <h3 className="text-lg font-semibold text-red-600">Incomplete Tasks</h3>
-            <p className="text-2xl font-bold text-red-700">3</p>
+            <p className="text-2xl font-bold text-red-700">{incompleteTask.length}</p>
           </div>
         </div>
       </div>
