@@ -5,9 +5,7 @@ import axios from "../config/axios";
 function Task(props) {
   const [task, setTask] = useState(props.task);
   const token = localStorage.getItem("Auth-Token");
-
-  console.log(task);
-
+  
   const formatDate = (isoString) =>
     new Date(isoString).toLocaleDateString("en-US", {
       year: "numeric",

@@ -5,6 +5,10 @@ import Person from "../Person";
 import axois from "../../config/axios";
 import { UserContext } from "../../context/UserContext";
 import Add_User from "../Mini-Pages/Add-User";
+import {initializeSocket,sendMessage,receiveMessage} from '../../config/socket';
+import { use } from "react";
+import Markdown from 'react-markdown';
+import ReactDOM from "react-dom";
 
 function Workspace_Page() {
   const { id } = useParams();
@@ -15,9 +19,122 @@ function Workspace_Page() {
   const [showContributorOpt, setShowContributorOpt] = useState(false);
   const [contributor, setContributor] = useState({});
 
+  const [message, setMessage] = useState('')
+
   const showAddRef = useRef(null);
   const showContributorOptRef = useRef(null);
+  const messageBox = useRef(null)
+  const conversationArea = useRef(null)
 
+
+
+  const handleSubmit = (e) => {
+    if (message === "") {
+      return;
+    }
+    const data = {
+      message,
+      sender: user,
+    };
+    setMessage("");
+    e.preventDefault();
+    sendMessage("workspace-message", data);
+    appendSendMessage(data);
+  }
+
+  const renderMessageContent = (msg) => {
+    if (msg.sender.id === "ai") {
+      return (
+        <div className="overflow-x-auto max-w-96 text-black p-2">
+          <Markdown>{msg.message}</Markdown>
+        </div>
+      );
+    } else {
+      return (
+        <div className="text-sm max-w-52 font-semibold text-black break-words whitespace-normal">
+          {msg.message}
+        </div>
+      );
+    }
+  };
+
+  const appendSendMessage = (data) => {
+    const messageElement = document.createElement("div");
+
+    messageElement.classList.add(
+        "sending",
+        "ml-auto",
+        "max-w-52",
+        "flex",
+        "flex-col",
+        "p-2",
+        "bg-slate-50",
+        "rounded-md",
+        "shadow",
+        "w-fit"
+    );
+
+    const nameElement = document.createElement("h5");
+    nameElement.classList.add("text-gray-500", "text-xs", "font-medium");
+    nameElement.textContent = "You";
+    messageElement.appendChild(nameElement);
+
+    const messageTextElement = document.createElement("p");
+    messageTextElement.className =
+        "text-sm font-semibold text-black break-words whitespace-normal";
+    messageTextElement.textContent = data.message;
+    messageElement.appendChild(messageTextElement);
+
+    messageBox.current.appendChild(messageElement);
+
+    
+    conversationArea.current.scrollTop = conversationArea.current.scrollHeight;
+};
+
+
+
+const appendReceiveMessage = (data) => {
+
+    if(data.sender._id === user._id){
+     appendSendMessage(data);
+     return null
+    }
+    const messageElement = document.createElement("div");
+
+    messageElement.classList.add(
+        "incoming",
+        "min-w-52",
+        "flex",
+        "flex-col",
+        "p-2",
+        "bg-slate-50",
+        "rounded-md",
+        "shadow",
+        "w-fit"
+    );
+
+    const nameElement = document.createElement("h5");
+    nameElement.classList.add("text-gray-500", "text-xs", "font-medium");
+    nameElement.textContent = data.sender.username; 
+    messageElement.appendChild(nameElement);
+
+   
+    const messageTextElement = document.createElement("div");
+    messageTextElement.className = "text-sm font-semibold text-black break-words whitespace-normal";
+
+   
+    
+    const renderedContent = renderMessageContent(data);
+    ReactDOM.render(renderedContent, messageTextElement); 
+    messageElement.appendChild(messageTextElement);
+    messageBox.current.appendChild(messageElement);
+
+    
+    conversationArea.current.scrollTop = conversationArea.current.scrollHeight;
+};
+
+
+  
 
   useEffect(()=>{
     axois.get(`/workspace/${id}`,{
@@ -51,6 +168,34 @@ function Workspace_Page() {
       });
     }
   }, [showAddUser]);
+
+  useEffect(() => {
+    if (conversationArea.current) {
+      conversationArea.current.scrollTop = conversationArea.current.scrollHeight;
+    }
+  }, [message]);
+
+  useEffect(() => {
+    if (!workspace._id) return; // Prevent initializing socket with undefined workspace ID
+    const socket = initializeSocket(workspace._id);
+    console.log(socket);
+
+    const messageHandler = (data) => {
+        if (data.sender.id === user._id) {
+            appendSendMessage(data);
+        } else {
+            appendReceiveMessage(data);
+        }
+    };
+
+    receiveMessage("workspace-message", messageHandler);
+
+    return () => {
+        if (socket) {
+            socket.off("workspace-message", messageHandler);
+        }
+    };
+}, [workspace, user]);
 
  
 
@@ -93,47 +238,32 @@ function Workspace_Page() {
         </div>
       </section>
       <section className="h-full w-full">
-        <div className="conversation-area h-full flex-grow flex flex-col overflow-y-auto ">
+        <div  ref={conversationArea} className="conversation-area h-full flex-grow flex flex-col overflow-y-auto ">
           <div className="title w-full flex items-center justify-center border-b-2 bg-black">
             <h1 className="text-3xl text-white py-4 font-semibold tracking-wide">
               {workspace.name}
             </h1>
           </div>
-          <div className="message-box flex-grow flex flex-col gap-1 p-2 bg-white">
-            <div className="message incoming max-w-60 flex flex-col p-2 bg-slate-50 rounded-md shadow w-fit">
-              <h5 className="text-gray-500 text-xs font-medium">
-                ai@example.com
-              </h5>
-              <div className="text-sm font-semibold break-words whitespace-normal">
-                Sample message content from AI.
+          <div  ref={messageBox} className="message-box flex-grow flex flex-col gap-1 p-2 bg-white">
+            {workspace.messages && workspace.messages.map((msg, index) => (
+              <div key={index}>
+                {renderMessageContent(msg)}
               </div>
-            </div>
-            <div className="message outgoing max-w-52 flex flex-col p-2 bg-slate-50 rounded-md shadow w-fit">
-              <h5 className="text-gray-500 text-xs font-medium">
-                user@example.com
-              </h5>
-              <div className="text-sm font-semibold break-words whitespace-normal">
-                Sample message content from User.
-              </div>
-            </div>
-            <div className="message outgoing max-w-52 flex flex-col p-2 bg-slate-50 rounded-md shadow w-fit ml-auto">
-              <h5 className="text-gray-500 text-xs font-medium">
-                {user.username}
-              </h5>
-              <div className="text-sm font-semibold break-words whitespace-normal">
-                Sample message content from User.
-              </div>
-            </div>
+            ))}
           </div>
           <div className="inputField flex w-full">
+            <form className="w-full" action="" onSubmit={(e)=>handleSubmit(e)}>
             <input
               className="p-2 px-4 border-none outline-none w-[83%] bg-gray-400 text-black placeholder-black"
               type="text"
+              value={message}
+              onChange={(e)=>setMessage(e.currentTarget.value)}
               placeholder="Enter Message"
             />
             <button className="p-3 px-4 bg-black text-white text-xl w-[17%]">
               <i className="ri-send-plane-fill"></i>
             </button>
+            </form>
           </div>
         </div>
       </section>
