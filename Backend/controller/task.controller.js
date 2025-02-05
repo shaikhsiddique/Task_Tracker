@@ -28,10 +28,7 @@ const createTaskController = async (req, res) => {
             assignedBy: req.user._id,
         };
 
-        const existingTask = await taskService.findByName(name);
-        if (existingTask) {
-            return res.status(400).json({ error: "A task with this name already exists" });
-        }
+        
 
         const task = await taskService.create(data);
         let user = await userModel.findById(assignedTo);

@@ -20,7 +20,7 @@ function Today_Tasks() {
       })
       .then((res) => {
         const tasks = res.data.tasks;
-        const personal = tasks.filter((e) => e.assignedBy === e.assignedTo);
+        const personal = tasks.filter((e) => user._id === e.assignedTo && e.assignedBy === e.assignedTo);
         const assigned = tasks.filter((e) => e.assignedBy !== e.assignedTo && e.assignedTo== user._id );
         setPersonalTask(personal);
         setAssignedTask(assigned);

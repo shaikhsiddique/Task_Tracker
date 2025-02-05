@@ -1,7 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "../../config/axios";
 import { UserContext } from "../../context/UserContext";
+import gsap from "gsap";
 
 function Edit_Task() {
   const { id } = useParams();
@@ -10,6 +11,7 @@ function Edit_Task() {
   const navigate = useNavigate();
   const [task, setTask] = useState({ name: "", description: "", deadline: "", attachment: null });
   const [loading, setLoading] = useState(true);
+  const errorRef = useRef(null);
 
   useEffect(() => {
     axios
@@ -26,7 +28,7 @@ function Edit_Task() {
         setLoading(false);
       })
       .catch((err) => {
-        console.error(err);
+        showError("Failed to fetch task details. Please try again.");
         setLoading(false);
       });
   }, [id, user, token]);
@@ -38,6 +40,13 @@ function Edit_Task() {
 
   const handleFileChange = (e) => {
     setTask((prevTask) => ({ ...prevTask, attachment: e.target.files[0] }));
+  };
+
+  const showError = (errMsg) => {
+    if (errorRef.current) {
+      errorRef.current.innerText = errMsg;
+      gsap.to(errorRef.current, { opacity: 1, duration: 0.5 });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -56,12 +65,13 @@ function Edit_Task() {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
-      }).then((res)=>{
-        navigate(-1);
-      })
-      
+      });
+      navigate(-1);
     } catch (err) {
-      console.error(err);
+      const errorMessage =
+        err.response?.data?.error || "Failed to update task. Please try again.";
+      showError(errorMessage);
+      console.error("Error updating task:", errorMessage);
     }
   };
 
@@ -76,6 +86,7 @@ function Edit_Task() {
           <h1 className="text-4xl font-bold text-center mb-4">Edit Task</h1>
         </div>
         <div className="container mx-auto max-w-lg p-8 rounded-lg shadow-lg bg-gray-50">
+          <p ref={errorRef} className="text-red-700 text-md font-bold text-center mb-6 opacity-0"></p>
           <form onSubmit={handleSubmit} className="space-y-6">
             <input
               type="text"

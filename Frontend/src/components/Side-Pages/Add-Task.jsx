@@ -1,6 +1,7 @@
-import React, { useState } from "react";
-import axios from '../../config/axios';
+import React, { useRef, useState } from "react";
+import axios from "../../config/axios";
 import { useNavigate } from "react-router-dom";
+import gsap from "gsap";
 
 function Add_Task() {
   const token = localStorage.getItem("Auth-Token");
@@ -12,6 +13,7 @@ function Add_Task() {
     deadlineDate: "",
     attachment: null,
   });
+  const errorRef = useRef(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,6 +22,13 @@ function Add_Task() {
 
   const handleFileChange = (e) => {
     setTask({ ...task, attachment: e.target.files[0] });
+  };
+
+  const showError = (errMsg) => {
+    if (errorRef.current) {
+      errorRef.current.innerText = errMsg; // Fixed typo
+      gsap.to(errorRef.current, { opacity: 1, duration: 0.5 });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -34,7 +43,7 @@ function Add_Task() {
     }
 
     try {
-      const response = await axios.post("/task/create", formData, {
+      await axios.post("/task/create", formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
@@ -46,11 +55,14 @@ function Add_Task() {
         tag: "",
         deadlineDate: "",
         attachment: null,
-      })
-      navigate('/')
-      
+      });
+      navigate("/");
     } catch (err) {
-      console.error("Error creating task:", err.response ? err.response.data : err.message);
+      console.log(err)
+      const errorMessage =
+        err.response?.data?.details || "Failed to create task. Please try again.";
+      showError(errorMessage);
+      console.error("Error creating task:", errorMessage);
     }
   };
 
@@ -60,7 +72,12 @@ function Add_Task() {
         <div className="mt-10">
           <h1 className="text-4xl font-bold text-center">Create Task</h1>
         </div>
+
         <div className="container mx-auto max-w-lg p-8 rounded-lg shadow-lg">
+          <p
+            ref={errorRef}
+            className="text-red-700 text-md font-bold text-center mb-6 opacity-0"
+          ></p>
           <form onSubmit={handleSubmit} className="space-y-6">
             <input
               type="text"
@@ -90,7 +107,10 @@ function Add_Task() {
               required
             />
             <div className="relative w-full">
-              <label htmlFor="deadlineDate" className="block mb-2 text-gray-600 font-medium">
+              <label
+                htmlFor="deadlineDate"
+                className="block mb-2 text-gray-600 font-medium"
+              >
                 Set Deadline
               </label>
               <input
@@ -100,7 +120,7 @@ function Add_Task() {
                 value={task.deadlineDate}
                 onChange={handleChange}
                 className="w-full p-4 border border-red-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-red-500"
-                required
+                
               />
             </div>
             <div className="relative w-full">
@@ -109,7 +129,6 @@ function Add_Task() {
                 id="file-upload"
                 className="hidden"
                 onChange={handleFileChange}
-                required
               />
               <label
                 htmlFor="file-upload"

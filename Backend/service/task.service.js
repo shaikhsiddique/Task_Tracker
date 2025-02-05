@@ -4,7 +4,6 @@ const findByName = async (name) => {
     try {
         if (!name) throw new Error("Name is required");
         const task = await taskModel.findOne({ name });
-        if (!task) throw new Error("Task not found");
         return task;
     } catch (error) {
         throw new Error(error.message);
@@ -23,7 +22,6 @@ const findById = async (id) => {
     try {
         if (!id) throw new Error("ID is required");
         const task = await taskModel.findById(id);
-        if (!task) throw new Error("Task not found");
         return task;
     } catch (error) {
         throw new Error(error.message);
@@ -71,6 +69,10 @@ const markComplete = async (id,userId) => {
         
         const task = await taskModel.findById(id);
         if (!task) throw new Error("Task not found");
+
+        if(task.status ==="in-complete"){
+            throw new Error("Task can only be marked complete before deadline");
+        }
         
         if (task.assignedTo.toString() !== userId.toString()) {
             console.log(task.assignedTo.toString(),userId.toString())
