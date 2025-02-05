@@ -22,8 +22,12 @@ function Navbar({ user }) {
           <i className="ri-arrow-down-s-line text-2xl pt-1"></i>
         </div>
         <div className="flex items-center justify-center gap-2">
+          <Link to="/home/inbox">
           <img className="h-6" src="./notification-bell.svg" alt="Notification Bell" />
-          <img className="h-6" src="./layout.svg" alt="Layout Icon" />
+          </Link>
+          <Link to="/logout">
+          <i className="ri-logout-box-r-line text-2xl font-extralight"></i>
+          </Link>
         </div>
       </header>
 
