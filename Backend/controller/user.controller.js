@@ -16,11 +16,12 @@ const signupController = async (req, res) => {
 
     if (req.files) {
         imageUrl = req.files[0].publicUrl;
+        console.log(imageUrl);
     }
     else{
         imageUrl= "https://storage.googleapis.com/ecommerce-ab165.appspot.com/default-profile19460541f53.png"
     }
-        const existingUser = await findUserByEmail(email);
+        const existingUser = await userService.findUserByEmail(email);
 
         if(existingUser){
            return res.status(500).json({ error: 'User with this data exists' });
