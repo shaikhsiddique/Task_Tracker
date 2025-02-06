@@ -46,6 +46,21 @@ function Add_User({ setshowAddUser, workspace }) {
 
   const handleAddUser = () => {
     console.log(selectedUsers);
+    selectedUsers.forEach((usr)=>{
+      axios.post("/notification/create",{
+        receiver :usr._id, type : "request", data:{
+          workspace:workspace
+        }
+      },{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }).then((res)=>{
+        console.log(res.data);
+      }).catch((err)=>{
+        console.log(err)
+      })
+    })
     setSelectedUsers([]);
   };
 

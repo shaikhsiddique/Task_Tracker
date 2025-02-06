@@ -58,7 +58,6 @@ function Add_Task() {
       });
       navigate("/");
     } catch (err) {
-      console.log(err)
       const errorMessage =
         err.response?.data?.details || "Failed to create task. Please try again.";
       showError(errorMessage);

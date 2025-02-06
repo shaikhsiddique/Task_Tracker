@@ -42,8 +42,13 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Productivity",
         default: null
-    }
-
+    },
+    notifications : [{
+        type : mongoose.Schema.Types.ObjectId,
+        ref : "Notification",
+        default : null
+    }]
+    
 }, { timestamps: true });
 
 const validateUserModel = (data) => {

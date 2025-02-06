@@ -88,6 +88,60 @@ const removeWorkspace = async (userId, workspaceId) => {
         throw new Error("Error removing workspace: " + err.message);
     }
 };
+const addNotification = async (userId, notificationId) => {
+    try {
+        if (!userId || !notificationId) {
+            throw new Error("User ID and Notification ID are required");
+        }
+
+        const user = await userModel.findById(userId);
+        if (!user) {
+            throw new Error("User not found");
+        }
+
+        // Optionally, check if the notification already exists to prevent duplicates
+        if (user.notifications.includes(notificationId)) {
+            throw new Error("Notification already exists in the user's list");
+        }
+
+        user.notifications.push(notificationId);
+        await user.save();
+
+        return user;
+    } catch (err) {
+        console.error("Error adding notification:", err);
+        throw new Error("Error adding notification: " + err.message);
+    }
+};
+
+const removeNotification = async (userId, notificationId) => {
+    try {
+        if (!userId || !notificationId) {
+            throw new Error("User ID and Notification ID are required");
+        }
+        console.log(userId,notificationId)
+
+        const user = await userModel.findById(userId);
+        if (!user) {
+            throw new Error("User not found");
+        }
+
+        const notificationIndex = user.notifications.indexOf(notificationId);
+        if (notificationIndex === -1) {
+            throw new Error("Notification not found in user's list");
+        }
+
+        user.notifications.splice(notificationIndex, 1);
+        await user.save();
+
+        return user;
+    } catch (err) {
+        console.error("Error removing notification:", err);
+        throw new Error("Error removing notification: " + err.message);
+    }
+};
 
 
-module.exports = { createUserService, findUserByEmail, findAllUsers , addWorkspace ,removeWorkspace };
+
+
+module.exports = { createUserService, findUserByEmail, findAllUsers , addWorkspace ,removeWorkspace ,addNotification ,removeNotification };

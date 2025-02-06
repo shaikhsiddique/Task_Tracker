@@ -96,9 +96,9 @@ const removeMemberController = async (req,res) => {
         console.log(error);
         return res.status(500).json({ message: "Internal server error", error });
     }
-
-
 }
+
+
 
 module.exports = { 
     createWorkspaceController, 
@@ -106,5 +106,5 @@ module.exports = {
     getAllWorkspacesController, 
     deleteWorkspaceController, 
     addMembersController,
-    removeMemberController 
+    removeMemberController ,
 };

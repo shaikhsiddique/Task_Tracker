@@ -13,10 +13,9 @@ const signupController = async (req, res) => {
         if (error) return res.status(400).json({ error: error.details[0].message });
 
         const { username, email, phone, password } = req.body;
-
-    if (req.files) {
+    if (req.files.length >0) {
         imageUrl = req.files[0].publicUrl;
-        console.log(imageUrl);
+        
     }
     else{
         imageUrl= "https://storage.googleapis.com/ecommerce-ab165.appspot.com/default-profile19460541f53.png"

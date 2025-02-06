@@ -27,7 +27,6 @@ function Account() {
       month: "short",
       day: "numeric",
     });
-
   return (
     <div className="h-full w-full bg-[#FFFFFF] flex items-center justify-center overflow-y-auto">
       <div className="w-full max-w-4xl p-6 bg-gray-50 rounded-lg shadow-lg flex flex-col">
