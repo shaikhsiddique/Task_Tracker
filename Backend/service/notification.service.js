@@ -95,7 +95,7 @@ const setMarked = async (id) => {
 const deleteNotification = async (id) => {
     try {
         const notification = await notificationModel.findByIdAndDelete(id);
-        if (!notification) {
+      if (!notification) {
             throw new Error("Notification not found");
         }
         return notification;
@@ -105,4 +105,4 @@ const deleteNotification = async (id) => {
     }
 };
 
-module.exports = { createNotification ,findAllNotifications,findNotificationById,deleteNotification ,setIsNew,setMarked};
+module.exports = { createNotification ,findAllNotifications,findNotificationById,deleteNotification ,setIsNew , setMarked};

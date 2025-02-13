@@ -1,12 +1,10 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import Notification from "../Notification";
 import { UserContext } from "../../context/UserContext";
 
-
-
 function Inbox() {
-
   const { user } = useContext(UserContext);
+  const [refresh, setrefresh] = useState(false);
 
   return (
     <div className="h-full w-full bg-[#FFFFFF] flex  items-center justify-center overflow-y-auto ">
@@ -19,11 +17,16 @@ function Inbox() {
           </div>
         </div>
         <div className="notification-container my-10 -mx-4">
-          {
-            user.notifications.map((notification,index) =>{
-               return <Notification key={index} notificationId={notification}/>
-            })
-          }
+          {user.notifications
+            .slice()
+            .reverse()
+            .map((notification, index) => (
+              <Notification
+                key={index}
+                notificationId={notification}
+                setrefresh={setrefresh}
+              />
+            ))}
         </div>
       </div>
     </div>

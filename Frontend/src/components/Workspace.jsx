@@ -1,11 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
+import axios from '../config/axios';
 
 function Workspace({ workspace }) {
   const { user } = useContext(UserContext);
   const [isAdmin, setIsAdmin] = useState(false);
   const [ismember, setIsmember] = useState(false);
+  const token = localStorage.getItem("Auth-Token");
 
   useEffect(() => {
     if (user?._id === workspace?.admin) {
@@ -15,6 +17,23 @@ function Workspace({ workspace }) {
       setIsmember(true);
     }
   }, [user, workspace]);
+
+  const handleJoinWorkspace = async () =>{
+    axios.post("/notification/create",{
+      receiver :workspace.admin, type : "request", data:{
+        workspace:workspace,
+        sender:user._id
+      }
+    },{
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((res)=>{
+      console.log(res.data);
+    }).catch((err)=>{
+      console.log(err)
+    })
+  }
 
   return (
     <div className="workspace border-t border-b py-4 px-6 bg-gray-100 rounded-lg shadow-md">
@@ -49,8 +68,7 @@ function Workspace({ workspace }) {
             </> : 
               <>
               <div className="flex gap-4">
-                <Link
-                  to={`/workspace/join/${workspace._id}`}
+                <Link onClick={()=>handleJoinWorkspace()}
                   className="ri-add-box-line text-blue-500 text-xl"
                 ></Link>
               </div>

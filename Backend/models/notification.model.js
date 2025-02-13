@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
 const notificationSchema = mongoose.Schema({
-    user : {
-        type:mongoose.Schema.Types.ObjectId,
-        ref : 'User',
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
     },
     message: {
         type: String,
@@ -13,23 +13,27 @@ const notificationSchema = mongoose.Schema({
         type: Object,
         required: true
     },
-    isNew : {
+    isNew: {
         type: Boolean,
-        enum: [true,false],
-        default:true
+        enum: [true, false],
+        default: true
     },
-    isMarked :{
+    isMarked: {
         type: Boolean,
-        enum: [true,false],
-        default:false
+        enum: [true, false],
+        default: false
     },
     type: {
         type: String,
         enum: ['request', 'notification', 'alarm'],
         required: true
+    },
+    date: {
+        type: Date,
+        default: Date.now
     }
 });
 
 const notificationModel = mongoose.model("Notification", notificationSchema);
 
-module.exports = {notificationModel};
+module.exports = { notificationModel };

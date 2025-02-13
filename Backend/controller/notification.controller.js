@@ -69,7 +69,7 @@ const deleteNotification = async (req, res) => {
 const setIsNew = async (req, res) => {
     try {
         let id = req.params.id;
-        console.log(id)
+
         let notification = await notificationService.setIsNew(id);
         if (!notification) {
             return res.status(404).json({ error: "Notification not found" });
@@ -81,12 +81,21 @@ const setIsNew = async (req, res) => {
         return res.status(500).json({ error: error.message });
     }
 };
-
+const setMarked = async (req, res) => {
+    let id = req.params.id;
+    try {
+        const notification = await notificationService.setMarked(id);
+        res.status(200).json({ success: true, message: "Notification marked successfully", data: notification });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Error marking notification", error: error.message });
+    }
+};
 
 module.exports = {
     createNotification,
     getAllNotifications,
     getNotificationById,
     deleteNotification,
-    setIsNew
+    setIsNew,
+    setMarked
 };

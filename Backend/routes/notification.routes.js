@@ -23,6 +23,9 @@ router.delete("/:id",auth,async (req,res)=>{
 router.post('/set/isNew/:id',auth, async (req,res)=>{
     notificationController.setIsNew(req,res);
 })
+router.post('/setMarked/:id',auth, async (req,res)=>{
+    notificationController.setMarked(req,res);
+})
 
 
 module.exports = router;

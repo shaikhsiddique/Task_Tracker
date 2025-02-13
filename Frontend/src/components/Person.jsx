@@ -1,7 +1,6 @@
 import React from "react";
 
 function Person({ setShowContributorOpt, setContributor, member }) {
-  console.log(member);
   return (
     <div
       onClick={() => {
