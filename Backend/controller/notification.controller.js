@@ -9,7 +9,7 @@ const createNotification = async (req, res) => {
         if (!sender || !receiver || !type || !data) {
             return res.status(400).json({ error: "Missing required fields: sender, receiver, type, or data" });
         }
-
+        
         const notification = await notificationService.createNotification({ sender, receiver, type, data });
         await userService.addNotification(receiver, notification._id);
         return res.status(201).json(notification);

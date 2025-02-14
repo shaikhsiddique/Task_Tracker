@@ -58,7 +58,7 @@ function All_Workspace() {
           All Workspace's
         </h1>
 
-        <div className="flex flex-col max-h-80 overflow-y-auto">
+        <div className="flex flex-col max-h-[340px] overflow-y-auto">
         {workspaces.map((workspace,index)=>{
           return <Workspace key={index} workspace={workspace}/>
         })} 

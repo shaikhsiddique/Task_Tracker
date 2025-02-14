@@ -6,7 +6,7 @@ const createNotification = async (data) => {
             throw new Error("Missing required fields: sender, receiver, type, or data");
         }
         
-        let message = "";
+        let message ;
 
         switch (data.type) {
             case 'request':
@@ -18,9 +18,9 @@ const createNotification = async (data) => {
                 message = `${data.sender} has requested to join workspace ${workspace}`;
                 break;
             case 'notification':
-                message = `${data.sender} sent you a notification`;
+                message = data.message;
                 if (data.data.message) {
-                    message += `: ${data.data.message}`;
+                    message = data.data.message
                 }
                 break;
             case 'alarm':
@@ -86,6 +86,7 @@ const setMarked = async (id) => {
         if (!notification) {
             throw new Error("Notification not found");
         }
+        
     } catch (error) {
         console.error("Error marking notification:", error.message);
         throw error;

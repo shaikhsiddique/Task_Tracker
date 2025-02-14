@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import axios from '../../config/axios';
 import { useNavigate, useParams } from "react-router-dom";
+import { UserContext } from "../../context/UserContext";
 
 function Assign_Task() {
   const token = localStorage.getItem("Auth-Token");
   const navigate = useNavigate();
+  const { user } = useContext(UserContext);
   const { id } = useParams();
   const [task, setTask] = useState({
     name: "",
@@ -36,12 +38,29 @@ function Assign_Task() {
     }
 
     try {
-      const response = await axios.post("/task/create", formData, {
+      await axios.post("/task/create", formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
-      });
+      }).then((res)=>{
+        axios.post("/notification/create",{
+          receiver :id, type : "notification", data:{
+            message :`${user.username} has Assigned  a Task to you "${res.data.task.name}"`,
+            sender: user,
+          }
+        },{
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }).then((res)=>{
+          console.log(res.data);
+        }).catch((err)=>{
+          console.log(err)
+        })
+      }).catch((err)=>{
+        console.log(err)
+      })
       setTask({
         name: "",
         description: "",
@@ -49,7 +68,7 @@ function Assign_Task() {
         deadlineDate: "",
         attachment: null,
       })
-      navigate('/')
+      navigate(-1);
       
     } catch (err) {
       console.error("Error creating task:", err.response ? err.response.data : err.message);
