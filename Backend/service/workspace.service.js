@@ -58,7 +58,7 @@ const deleteWorkspace = async (id) => {
         }
         let workspace = await workspaceModel.findByIdAndDelete(id);
         if (workspace) {
-            return { status: 200, json: { message: "Workspace deleted successfully" } };
+            return { status: 200, json: { message: "Workspace deleted successfully",workspace } };
         }
         return { status: 404, json: { message: "Workspace not found" } };
     } catch (error) {

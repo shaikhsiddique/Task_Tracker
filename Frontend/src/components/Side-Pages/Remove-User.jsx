@@ -19,7 +19,23 @@ function RemoveUser() {
         { workspaceId: workspace._id, memberId: id },
         { headers: { Authorization: `Bearer ${token}` } }
       )
-      .then(() => navigate(-1))
+      .then((res) =>{
+        console.log(res.data.workspace);
+        axios.post("/notification/create",{
+          receiver : id, type : "notification", data:{
+            message :`You are removed from Workspace "${res.data.workspace.name}"`,
+          }
+        },{
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }).then((res)=>{
+          console.log(res.data);
+        }).catch((err)=>{
+          console.log(err)
+        })
+        navigate(-1)
+      })
       .catch((err) => console.error(err));
   }, [workspace, id, token, navigate]);
 
