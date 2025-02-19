@@ -43,7 +43,7 @@ function Search() {
 
         {/* Tasks Section */}
         <h2 className="text-lg font-bold text-gray-800 mb-4">Tasks</h2>
-        <div className="max-h-80 overflow-y-auto">
+        <div className="max-h-96 overflow-y-auto">
           {filteredTasks.length > 0 ? (
             filteredTasks.slice(0, 5).map((task, index) => (
               <Task key={index} task={task} />
