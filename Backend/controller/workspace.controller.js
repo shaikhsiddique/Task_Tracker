@@ -59,7 +59,9 @@ const getAllWorkspacesController = async (req, res) => {
 const deleteWorkspaceController = async (req, res) => {
     try {
         const { id } = req.params;
+        const userId =req.user._id;
         const result = await workspaceService.deleteWorkspace(id);
+        await userService.removeWorkspace(userId,id);
         return res.status(result.status).json(result.json);
     } catch (error) {
         console.log(error);

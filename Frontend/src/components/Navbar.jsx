@@ -23,7 +23,7 @@ function Navbar({ user }) {
         </div>
         <div className="flex items-center justify-center gap-2">
           <Link to="/home/inbox">
-          <img className="h-6" src="./notification-bell.svg" alt="Notification Bell" />
+          <i className="ri-notification-3-line text-2xl font-extralight"></i>
           </Link>
           <Link to="/logout">
           <i className="ri-logout-box-r-line text-2xl font-extralight"></i>
