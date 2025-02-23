@@ -2,6 +2,7 @@ const sendEmail = require("../utils/email");
 const cron = require("node-cron");
 const {taskModel} = require("../models/task.model");
 const {userModel}= require('../models/user.model');
+const {notificationModel} = require('../models/notification.model');
 
 const sendNotification = () => {
   cron.schedule("0 0 * * *", async () => { 
@@ -24,8 +25,13 @@ const sendNotification = () => {
         let subject = `Task Deadline Reminder - Due in ${daysLeft} Days`;
         const user = await userModel.findById(task.assignedTo);
         await sendEmail(user.email, message, subject);
-      }
-    } catch (error) {
+        notificationModel.create({user: user._id,
+                                  message:message ,
+                                   type:  'alarm',
+      })
+    } 
+  }
+    catch (error) {
       console.error("Error sending notifications: ", error);
     }
   });

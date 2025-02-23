@@ -15,7 +15,7 @@ const createNotification = async (data) => {
                 }
                 let workspace = (data.data.workspace.name)
                
-                message = `${data.sender} has requested to join workspace ${workspace}`;
+                message = `${data.sender} has requested to join workspace "${workspace}"`;
                 break;
             case 'notification':
                 message = data.message;

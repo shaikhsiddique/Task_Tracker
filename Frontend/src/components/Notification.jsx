@@ -18,6 +18,7 @@ function Notification({ notificationId, setrefresh }) {
         calculateTimeAgo(res.data.date);
       })
       .catch((err) => console.log(err));
+      window.location.reload();
   }, [token, notificationId]);
 
   useEffect(() => {
@@ -28,6 +29,7 @@ function Notification({ notificationId, setrefresh }) {
         { headers: { Authorization: `Bearer ${token}` } }
       )
       .catch((err) => console.log(err));
+      window.location.reload();
   }, [notificationId, token]);
 
   const calculateTimeAgo = (dateString) => {
@@ -90,6 +92,7 @@ function Notification({ notificationId, setrefresh }) {
       )
       .then((res) => console.log(res.data))
       .catch((err) => console.log(err));
+      window.location.reload();
   };
 
   const handleDelete = () => {
@@ -99,7 +102,8 @@ function Notification({ notificationId, setrefresh }) {
       })
       .then((res) => console.log(res.data))
       .catch((err) => console.log(err));
-    setrefresh(true);
+      setrefresh(true);
+      window.location.reload();
   };
 
   return (
