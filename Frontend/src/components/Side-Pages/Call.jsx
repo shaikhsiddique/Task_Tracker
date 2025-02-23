@@ -226,13 +226,14 @@ const Call = () => {
                   <button
                     onClick={toggleMic}
                     className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded"
-                  >
+                  > 
+                    <i className={`px-2 ${micEnabled ?'ri-mic-line' :'ri-mic-off-line'}`}></i>
                     {micEnabled ? "Mute Mic" : "Unmute Mic"}
                   </button>
                   <button
                     onClick={toggleVideo}
                     className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded"
-                  >
+                  > <i className={` px-2 ${videoEnabled ? 'ri-video-on-line': 'ri-video-off-line'}`}></i>
                     {videoEnabled ? "Turn Off Video" : "Turn On Video"}
                   </button>
                   <div className="flex items-center gap-2">

@@ -337,6 +337,7 @@ function Workspace_Page() {
             <Link
               to={`/collaboration/call/${contributor._id}`}
               state={{ workspace, isCaller: true }}
+              className="option flex items-center gap-3 p-3 hover:bg-gray-100 rounded-md cursor-pointer"
             >
               <i className="ri-user-voice-fill text-lg text-green-600"></i>
               <p className="text-sm font-medium text-gray-700">Call</p>
