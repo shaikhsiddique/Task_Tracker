@@ -31,6 +31,15 @@ const findUserByEmail = async (email) => {
     }
 };
 
+const findUserById = async (id) => {
+    try {
+        const user = await userModel.findById(id);
+        return user;
+    } catch (err) {
+        throw new Error('Error finding user: ' + err.message);
+    }
+}
+
 const findAllUsers = async () => {
     try {
         const users = await userModel.find();
@@ -144,4 +153,4 @@ const removeNotification = async (userId, notificationId) => {
 
 
 
-module.exports = { createUserService, findUserByEmail, findAllUsers , addWorkspace ,removeWorkspace ,addNotification ,removeNotification };
+module.exports = { createUserService, findUserByEmail, findAllUsers , addWorkspace ,removeWorkspace ,addNotification ,removeNotification,findUserById };

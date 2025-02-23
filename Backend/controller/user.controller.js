@@ -155,5 +155,19 @@ const getAllUserController = async (req, res) => {
     }
 };
 
+const getUserByIdController = async (req,res) => {
+    try {
+        const id = req.params.id;
+    if(!id){
+        res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+    const user = await userService.findUserById(id);
+    res.json({ success: true, user });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Internal Server Error", error: error.message });
+    }
 
-module.exports = {loginController,signupController,profileController,logoutController,getAllUserController};
+
+}
+
+module.exports = {loginController,signupController,profileController,logoutController,getAllUserController,getUserByIdController};

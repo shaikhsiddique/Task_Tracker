@@ -24,6 +24,9 @@ router.get('/profile',auth, async (req, res) => {
 router.get('/all',auth,async (req,res)=>{
     userController.getAllUserController(req,res);
 })
+router.get("/:id",auth,async (req,res)=>{
+    userController.getUserByIdController(req,res);
+})
 
 
 module.exports = router;

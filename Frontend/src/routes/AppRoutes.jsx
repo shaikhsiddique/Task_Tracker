@@ -49,7 +49,7 @@ function AppRoutes() {
         <Route path='/workspace/edit/:id' element={<UserAuth><Home><Edit_Workspace/></Home></UserAuth>}/>
         <Route path='/workspace/delete/:id' element={<UserAuth><Home><Delete_Workspace/></Home></UserAuth>}/>
         <Route path='/workspace/remove/:id' element={<UserAuth><Home><Remove_User/></Home></UserAuth>}/>
-        <Route path=' /collaboration/call/:id' element={<UserAuth><Home><Call/></Home></UserAuth>}/>
+        <Route path='/collaboration/call/:id' element={<UserAuth><Home><Call/></Home></UserAuth>}/>
         <Route path='/login' element={<Login/>}/>
         <Route path='/signup' element={<SignUp/>}/>
         <Route path='/logout' element={<Logout/>}/>
