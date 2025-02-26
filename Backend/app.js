@@ -7,32 +7,33 @@ const cookie_parser = require('cookie-parser');
 const morgan = require('morgan');
 const sendNotification = require('./config/notification');
 
-
 const userRouter = require('./routes/user.routes');
-const taskRouter = require('./routes/task.routes')
+const taskRouter = require('./routes/task.routes');
 const workspaceRouter = require('./routes/workspace.routes');
 const notificationRouter = require('./routes/notification.routes');
 
-
-
 const { updateTaskStatus } = require('./config/deadline');
 
+// CORS configuration
+const corsOptions = {
+    origin: "https://task-tracker-cyan-alpha.vercel.app",
+    credentials: true, 
+    optionsSuccessStatus: 200
+};
 
-
+app.use(cors(corsOptions));
 app.use(express.json());
-app.use(express.urlencoded({extended:true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
-app.use(cors());
 app.use(cookie_parser());
 
 db();
 updateTaskStatus();
 sendNotification();
 
-
-app.use("/user",userRouter);
-app.use("/task",taskRouter);
-app.use('/workspace',workspaceRouter)
-app.use("/notification",notificationRouter);
+app.use("/user", userRouter);
+app.use("/task", taskRouter);
+app.use('/workspace', workspaceRouter);
+app.use("/notification", notificationRouter);
 
 module.exports = app;
