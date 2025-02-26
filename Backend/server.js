@@ -8,6 +8,7 @@ const redisClient = require("./service/redis.service");
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
 const connectedUsers = {};
+require("dotenv").config();
 
 io.use(async (socket, next) => {
   try {
@@ -84,5 +85,7 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(process.env.PORT || 3000);
+server.listen(process.env.PORT || 3000,()=>{
+  console.log("server runing on ",process.env.PORT)
+});
 module.exports = server;
