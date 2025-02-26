@@ -1,3 +1,4 @@
+require("dotenv").config();
 const http = require("http");
 const app = require("./app");
 const { Server } = require("socket.io");
@@ -8,7 +9,7 @@ const redisClient = require("./service/redis.service");
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
 const connectedUsers = {};
-require("dotenv").config();
+
 
 const port = process.env.PORT || 5000;
 
