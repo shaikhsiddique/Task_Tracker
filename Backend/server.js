@@ -85,7 +85,7 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(process.env.PORT || 3000,()=>{
+server.listen(process.env.PORT || 5000,()=>{
   console.log("server runing on ",process.env.PORT)
 });
 module.exports = server;
