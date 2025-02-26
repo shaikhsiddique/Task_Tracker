@@ -18,7 +18,6 @@ function Notification({ notificationId, setrefresh }) {
         calculateTimeAgo(res.data.date);
       })
       .catch((err) => console.log(err));
-      window.location.reload();
   }, [token, notificationId]);
 
   useEffect(() => {
@@ -29,7 +28,6 @@ function Notification({ notificationId, setrefresh }) {
         { headers: { Authorization: `Bearer ${token}` } }
       )
       .catch((err) => console.log(err));
-      window.location.reload();
   }, [notificationId, token]);
 
   const calculateTimeAgo = (dateString) => {

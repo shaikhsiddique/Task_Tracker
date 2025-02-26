@@ -183,6 +183,7 @@ function Workspace_Page() {
     });
 
     const messageHandler = (data) => {
+      console.log(data)
       if (data.sender.id === user._id) {
         appendSendMessage(data);
       } else {
