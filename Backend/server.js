@@ -10,6 +10,8 @@ const io = new Server(server, { cors: { origin: "*" } });
 const connectedUsers = {};
 require("dotenv").config();
 
+const port = process.env.PORT || 5000;
+
 io.use(async (socket, next) => {
   try {
     const token = socket.handshake.auth.token || socket.handshake.headers["authorization"]?.split(" ")[1];
@@ -85,7 +87,7 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(process.env.PORT || 5000,()=>{
-  console.log("server runing on ",process.env.PORT)
+server.listen(port,()=>{
+  console.log("server runing on ",port)
 });
 module.exports = server;
