@@ -6,7 +6,7 @@ function Navbar({ user }) {
   const location = useLocation(); // Get the current location
 
   const isActive = (path) => location.pathname === path; // Check if a path is active
-
+  console.log(user);
   return (
     <div className="navbar h-full w-[25vw] flex flex-col bg-[#FCFAF6] px-3 py-5">
       <header className="flex justify-between items-center ">

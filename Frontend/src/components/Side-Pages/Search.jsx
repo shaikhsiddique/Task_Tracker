@@ -26,14 +26,10 @@ function Search() {
         {/* Header Section */}
         <div className="flex justify-between items-center pb-3">
           <h1 className="text-2xl font-bold text-gray-900">Search Tasks</h1>
-          <div className="flex items-center gap-2 text-gray-600 cursor-pointer hover:text-gray-900">
-            <i className="ri-list-view text-xl"></i>
-            <p className="text-base font-medium">View</p>
-          </div>
         </div>
 
         {/* Search Input */}
-        <div className="flex items-center gap-3 my-6">
+        <div className="flex items-center gap-3 my-10">
           <input
             type="text"
             placeholder="Enter Task Name"
@@ -45,7 +41,7 @@ function Search() {
 
         {/* Tasks Section */}
         <h2 className="text-lg font-bold text-gray-800 mb-4">Tasks</h2>
-        <div className="max-h-96 overflow-y-auto">
+        <div className="max-h-80 overflow-y-auto">
           {filteredTasks.length > 0 ? (
             filteredTasks.map((task) => (
               <Task key={task._id} task={task} />

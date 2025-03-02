@@ -11,22 +11,22 @@ function Inbox() {
       <div className="w-full h-full p-40">
         <div className="flex justify-between items-center pb-3">
           <h1 className="text-3xl font-bold text-gray-900">Inbox</h1>
-          <div className="flex items-center gap-2 text-gray-600 cursor-pointer hover:text-gray-900">
-            <i className="ri-list-view text-xl"></i>
-            <p className="text-base font-medium">View</p>
-          </div>
         </div>
         <div className="notification-container my-10 -mx-4">
-          {user.notifications
-            .slice()
-            .reverse()
-            .map((notification, index) => (
-              <Notification
-                key={index}
-                notificationId={notification}
-                setrefresh={setrefresh}
-              />
-            ))}
+          {user.notifications.length === 0 ? (
+            <p className="text-gray-500">You have no new notifications at this time.</p>
+          ) : (
+            user.notifications
+              .slice()
+              .reverse()
+              .map((notification, index) => (
+                <Notification
+                  key={index}
+                  notificationId={notification}
+                  setrefresh={setrefresh}
+                />
+              ))
+          )}
         </div>
       </div>
     </div>
