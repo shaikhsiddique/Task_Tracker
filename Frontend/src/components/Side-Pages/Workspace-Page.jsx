@@ -9,16 +9,17 @@ import {
   initializeSocket,
   sendMessage,
   receiveMessage,
-  listenForCallRequest
+  listenForCallRequest,
 } from "../../config/socket";
 import { use } from "react";
 import Markdown from "react-markdown";
 import ReactDOM from "react-dom";
+import { WorkSpaceContext } from "../../context/WorkSpaceContext";
 
 function Workspace_Page() {
   const { id } = useParams();
   const { user } = useContext(UserContext);
-  const [workspace, setworkspace] = useState({});
+  const { activeWorkspace, setActiveWorkspace } = useContext(WorkSpaceContext);
   const token = localStorage.getItem("Auth-Token");
   const [showAddUser, setshowAddUser] = useState(false);
   const [showContributorOpt, setShowContributorOpt] = useState(false);
@@ -139,12 +140,12 @@ function Workspace_Page() {
         },
       })
       .then((res) => {
-        setworkspace(res.data);
+        setActiveWorkspace(res.data);
       })
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     if (showContributorOptRef.current) {
@@ -174,17 +175,26 @@ function Workspace_Page() {
   }, [message]);
 
   useEffect(() => {
-    if (!workspace._id) return; // Prevent initializing socket with undefined workspace ID
-    const socket = initializeSocket(workspace._id);
+    console.log("Active Workspace:", activeWorkspace);
+
+    if (!activeWorkspace || !activeWorkspace._id) {
+      console.warn(
+        "Workspace ID is undefined, skipping socket initialization."
+      );
+      return;
+    }
+
+    const socket = initializeSocket(activeWorkspace._id);
+    console.log("Socket initialized with workspace ID:", activeWorkspace._id);
 
     listenForCallRequest((data) => {
-      navigate(`/collaboration/call/${data.callerId}`, { state: { workspace, isCaller: false } });
-      
+      navigate(`/collaboration/call/${data.callerId}_${activeWorkspace._id}`, {
+        state: { workspace: activeWorkspace, isCaller: false },
+      });
     });
 
     const messageHandler = (data) => {
-      console.log(data)
-      if (data.sender.id === user._id) {
+      if (data.sender.id === user?._id) {
         appendSendMessage(data);
       } else {
         appendReceiveMessage(data);
@@ -198,7 +208,7 @@ function Workspace_Page() {
         socket.off("workspace-message", messageHandler);
       }
     };
-  }, [workspace, user]);
+  }, [activeWorkspace?._id, user]);
 
   return (
     <main className="h-full w-full flex">
@@ -219,7 +229,7 @@ function Workspace_Page() {
         <div className="sidePanel w-full h-full flex flex-col gap-2 bg-zinc-200 absolute left-0 transform translate-x-0 top-0 transition-transform duration-300">
           <header className="flex justify-between min-h-[68px] items-center bg-zinc-500">
             <h1 className="font-semibold px-4">Collaborates</h1>
-            {user._id == workspace.admin ? (
+            {user._id == activeWorkspace.admin ? (
               <button
                 onClick={() => setshowAddUser(true)}
                 className="close-fil text-lg p-3 px-5 rounded-full"
@@ -231,8 +241,8 @@ function Workspace_Page() {
             )}
           </header>
           <div className="users flex flex-col gap-2">
-            {Array.isArray(workspace.members) &&
-              workspace.members.map((member, key) => {
+            {Array.isArray(activeWorkspace.members) &&
+              activeWorkspace.members.map((member, key) => {
                 if (user._id === member._id) {
                   return null;
                 }
@@ -255,15 +265,15 @@ function Workspace_Page() {
         >
           <div className="title w-full flex items-center justify-center border-b-2 bg-black">
             <h1 className="text-3xl text-white py-4 font-semibold tracking-wide">
-              {workspace.name}
+              {activeWorkspace.name}
             </h1>
           </div>
           <div
             ref={messageBox}
             className="message-box flex-grow flex flex-col gap-1 p-2 bg-white"
           >
-            {workspace.messages &&
-              workspace.messages.map((msg, index) => (
+            {activeWorkspace.messages &&
+              activeWorkspace.messages.map((msg, index) => (
                 <div key={index}>{renderMessageContent(msg)}</div>
               ))}
           </div>
@@ -294,7 +304,7 @@ function Workspace_Page() {
         className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
         style={{ opacity: 0, pointerEvents: "none" }}
       >
-        <Add_User setshowAddUser={setshowAddUser} workspace={workspace} />
+        <Add_User setshowAddUser={setshowAddUser} workspace={activeWorkspace} />
       </div>
 
       <div
@@ -325,24 +335,25 @@ function Workspace_Page() {
               <p className="text-sm font-medium text-gray-700">Assign Task</p>
             </Link>
 
-            {user._id === workspace.admin ? (
+            {user._id === activeWorkspace.admin ? (
               <Link
                 to={`/workspace/remove/${contributor._id}`}
-                state={{ workspace }}
+                state={{ activeWorkspace }}
                 className="option flex items-center gap-3 p-3 hover:bg-gray-100 rounded-md cursor-pointer"
               >
                 <i className="ri-user-forbid-line text-lg text-red-600"></i>
                 <p className="text-sm font-medium text-gray-700">Remove User</p>
               </Link>
             ) : null}
-            <Link
-              to={`/collaboration/call/${contributor._id}`}
-              state={{ workspace, isCaller: true }}
-              className="option flex items-center gap-3 p-3 hover:bg-gray-100 rounded-md cursor-pointer"
-            >
-              <i className="ri-user-voice-fill text-lg text-green-600"></i>
-              <p className="text-sm font-medium text-gray-700">Call</p>
-            </Link>
+            {activeWorkspace && activeWorkspace._id && (
+              <Link
+                to={`/collaboration/call/${contributor._id}_${activeWorkspace._id}_true`}
+                className="option flex items-center gap-3 p-3 hover:bg-gray-100 rounded-md cursor-pointer"
+              >
+                <i className="ri-user-voice-fill text-lg text-green-600"></i>
+                <p className="text-sm font-medium text-gray-700">Call</p>
+              </Link>
+            )}
           </div>
         </div>
       </div>

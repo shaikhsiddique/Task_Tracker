@@ -3,6 +3,7 @@ import { io } from 'socket.io-client';
 let socketInstance = null;
 
 export const initializeSocket = (workspaceId) => {
+  console.log(workspaceId);
   if (!workspaceId) return null;
   if (socketInstance && socketInstance.query.workspaceId !== workspaceId) {
     socketInstance.disconnect();

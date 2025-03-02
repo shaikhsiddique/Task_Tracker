@@ -1,26 +1,24 @@
 import React, { useEffect, useRef, useState, useContext } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
-import { initializeSocket, callRequest, callAccepted, videoJoin, videoOffer, videoAnswer, videoIceCandidate, callEnded } from '../../config/socket';
+import { 
+  initializeSocket, callRequest, callAccepted, videoJoin, 
+  videoOffer, videoAnswer, videoIceCandidate, callEnded 
+} from '../../config/socket';
 import { UserContext } from '../../context/UserContext';
-import axois from '../../config/axios';
+import axios from '../../config/axios';
+import { WorkSpaceContext } from '../../context/WorkSpaceContext';
 
 const Call = () => {
+  // Always call hooks at the top
   const { id: routeId } = useParams();
   const { state } = useLocation();
-  const workspace = state?.workspace;
+  const { activeWorkspace, setActiveWorkspace } = useContext(WorkSpaceContext);
   const isCaller = state?.isCaller;
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
   const token = localStorage.getItem("Auth-Token");
 
-  if (!workspace) {
-    return <p>Error: Workspace data missing.</p>;
-  }
-
-  const workspaceRoom = workspace._id;
-  const callRoomId = isCaller ? `${user._id}_${routeId}` : `${routeId}_${user._id}`;
-  const configuration = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
-
+  // Declare state and refs
   const [caller, setCaller] = useState(null);
   const [socket, setSocket] = useState(null);
   const [joinedCall, setJoinedCall] = useState(isCaller);
@@ -34,41 +32,63 @@ const Call = () => {
   const remoteVideoRef = useRef(null);
   const localStreamRef = useRef(null);
 
+  // Compute values that rely on activeWorkspace
+  const workspaceRoom = activeWorkspace ? activeWorkspace._id : null;
+  const callRoomId = isCaller ? `${user._id}_${routeId}` : `${routeId}_${user._id}`;
+  const configuration = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
+
+  // Fetch caller info
   useEffect(() => {
-    axois.get(`/user/${routeId}`, {
+    axios.get(`/user/${routeId}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
-      .then((res) => {
-        setCaller(res.data.user);
-      })
-      .catch(() => {});
+    .then((res) => setCaller(res.data.user))
+    .catch((err) => console.error("Error fetching caller info:", err));
   }, [routeId, token]);
 
+  // Fetch workspace if not loaded or mismatched
   useEffect(() => {
-    const newSocket = initializeSocket(workspace._id);
+    if (!activeWorkspace || activeWorkspace._id !== workspaceRoom) {
+      // Here, workspaceRoom will be null if activeWorkspace is not set.
+      // Use routeId or another URL param to fetch the correct workspace.
+      // For example, if routeId represents workspace ID, adjust accordingly:
+      axios.get(`/workspace/${routeId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => setActiveWorkspace(res.data))
+      .catch((err) => console.error("Error fetching workspace:", err));
+    }
+  }, [routeId, token, activeWorkspace, setActiveWorkspace]);
+
+  // Initialize socket when workspace is available
+  useEffect(() => {
+    if (!workspaceRoom) return;
+    const newSocket = initializeSocket(workspaceRoom);
     if (!newSocket) return;
     setSocket(newSocket);
     newSocket.on("connect", () => {
       newSocket.emit("register", { userId: user._id });
       if (isCaller) {
-        callRequest({ roomId: callRoomId, callerId: user._id, calleeId: routeId, message: `"${user.username}" Requested for call` });
+        callRequest({
+          roomId: callRoomId,
+          callerId: user._id,
+          calleeId: routeId,
+          message: `"${user.username}" requested a call`,
+        });
       }
     });
     newSocket.on("call-accepted", () => {
       setJoinedCall(true);
-      setTimeout(() => {
-        createOffer();
-      }, 1000);
+      setTimeout(() => createOffer(), 1000);
     });
     newSocket.on("call-ended", () => {
       endCall();
     });
     newSocket.emit("join", { roomId: workspaceRoom });
-    return () => {
-      newSocket.disconnect();
-    };
-  }, []);
+    return () => newSocket.disconnect();
+  }, [workspaceRoom, user, isCaller, callRoomId, routeId]);
 
+  // Initialize WebRTC when socket is ready and call is joined
   useEffect(() => {
     if (!socket || !joinedCall) return;
     videoJoin({ roomId: callRoomId });
@@ -81,7 +101,7 @@ const Call = () => {
           pcRef.current.addTrack(track, stream);
         });
       })
-      .catch(() => {});
+      .catch(err => console.error("Media stream error:", err));
     pcRef.current.ontrack = (event) => {
       if (remoteVideoRef.current) remoteVideoRef.current.srcObject = event.streams[0];
     };
@@ -97,17 +117,23 @@ const Call = () => {
         const answer = await pcRef.current.createAnswer();
         await pcRef.current.setLocalDescription(answer);
         videoAnswer({ answer, roomId: callRoomId });
-      } catch (err) {}
+      } catch (err) {
+        console.error("Error handling video offer:", err);
+      }
     });
     socket.on("video-answer", async (data) => {
       try {
         await pcRef.current.setRemoteDescription(new RTCSessionDescription(data.answer));
-      } catch (err) {}
+      } catch (err) {
+        console.error("Error handling video answer:", err);
+      }
     });
     socket.on("video-ice-candidate", async (data) => {
       try {
         await pcRef.current.addIceCandidate(new RTCIceCandidate(data.candidate));
-      } catch (err) {}
+      } catch (err) {
+        console.error("Error handling ICE candidate:", err);
+      }
     });
     return () => {
       if (socket) {
@@ -124,7 +150,9 @@ const Call = () => {
       const offer = await pcRef.current.createOffer();
       await pcRef.current.setLocalDescription(offer);
       videoOffer({ offer, roomId: callRoomId });
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error creating offer:", error);
+    }
   };
 
   const handleAcceptCall = () => {
@@ -173,7 +201,11 @@ const Call = () => {
     navigate(-1);
   };
 
-  return (
+  // Now, always render the same number of hooks.
+  // Conditionally render UI based on whether the workspace is loaded.
+  return (!activeWorkspace || !activeWorkspace._id) ? (
+    <p>Error: Workspace data missing.</p>
+  ) : (
     <div className="text-center h-full w-full flex items-center justify-center relative">
       {!isCaller && !joinedCall && (
         caller ? (
@@ -216,7 +248,7 @@ const Call = () => {
               ref={remoteVideoRef}
               autoPlay
               playsInline
-              className="w-2/3 left-10 top-20 h-2/3 border border-gray-300 rounded absolute "
+              className="w-2/3 left-10 top-20 h-2/3 border border-gray-300 rounded absolute"
             />
           </div>
           {callActive && (
@@ -227,13 +259,14 @@ const Call = () => {
                     onClick={toggleMic}
                     className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded"
                   > 
-                    <i className={`px-2 ${micEnabled ?'ri-mic-line' :'ri-mic-off-line'}`}></i>
+                    <i className={`px-2 ${micEnabled ? 'ri-mic-line' : 'ri-mic-off-line'}`}></i>
                     {micEnabled ? "Mute Mic" : "Unmute Mic"}
                   </button>
                   <button
                     onClick={toggleVideo}
                     className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded"
-                  > <i className={` px-2 ${videoEnabled ? 'ri-video-on-line': 'ri-video-off-line'}`}></i>
+                  >
+                    <i className={`px-2 ${videoEnabled ? 'ri-video-on-line' : 'ri-video-off-line'}`}></i>
                     {videoEnabled ? "Turn Off Video" : "Turn On Video"}
                   </button>
                   <div className="flex items-center gap-2">
