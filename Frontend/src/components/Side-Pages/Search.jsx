@@ -1,22 +1,24 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState, useMemo } from "react";
 import Task from "../Task";
 import { UserContext } from "../../context/UserContext";
-import axios from "../../config/axios";
 
 function Search() {
   const { user } = useContext(UserContext);
-  const [tasks, setTasks] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
-  let token = localStorage.getItem("Auth-Token");
-
-  useEffect(() => {
-    setTasks(user.tasks)
-  }, [token, user]);
-
-  const filteredTasks = tasks.filter(task =>
-    task.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Use useMemo to compute filtered tasks from user.tasks directly
+  const filteredTasks = useMemo(() => {
+    // if no tasks available, return an empty array
+    if (!user?.tasks) return [];
+    
+    // if searchTerm is empty, return all tasks
+    if (!searchTerm.trim()) return user.tasks;
+    
+    return user.tasks.filter((task) => {
+      // Make sure task.name exists and do a case-insensitive match
+      return task?.name?.toLowerCase().includes(searchTerm.toLowerCase().trim());
+    });
+  }, [user?.tasks, searchTerm]);
 
   return (
     <div className="h-full w-full bg-[#FFFFFF] flex items-center justify-center overflow-y-auto">
@@ -45,8 +47,8 @@ function Search() {
         <h2 className="text-lg font-bold text-gray-800 mb-4">Tasks</h2>
         <div className="max-h-96 overflow-y-auto">
           {filteredTasks.length > 0 ? (
-            filteredTasks.slice(0, 5).map((task, index) => (
-              <Task key={index} task={task} />
+            filteredTasks.map((task) => (
+              <Task key={task._id} task={task} />
             ))
           ) : (
             <p className="text-gray-600">No tasks found</p>

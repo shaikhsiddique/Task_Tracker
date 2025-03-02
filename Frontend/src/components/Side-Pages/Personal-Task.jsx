@@ -5,12 +5,13 @@ import axios from "../../config/axios";
 
 function Personal_Task() {
   const { user } = useContext(UserContext);
-  const [personalTask, setPersonalTask] = useState([]);
-  const [assignedTask, setAssignedTask] = useState([]);
-
-  let token = localStorage.getItem("Auth-Token");
+  const [todayTasks, setTodayTasks] = useState([]);
+  const [upcomingTasks, setUpcomingTasks] = useState([]);
+  const token = localStorage.getItem("Auth-Token");
 
   useEffect(() => {
+    if (!user) return;
+
     axios
       .get("/task/today", {
         headers: {
@@ -18,36 +19,57 @@ function Personal_Task() {
         },
       })
       .then((res) => {
-        const tasks = res.data.tasks;
-        const personal = tasks.filter((e) => user._id === e.assignedTo && e.assignedBy === e.assignedTo );
-        const assigned = tasks.filter((e) => e.assignedBy !== e.assignedTo || user._id === e.assignedTo );
-        setPersonalTask(personal);
-        setAssignedTask(assigned);
+        setTodayTasks(res.data.tasks);
       })
       .catch((err) => {
-        console.log(err);
+        console.error("Error fetching today's tasks:", err);
+      });
+
+    axios
+      .get("/task/upcoming", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        setUpcomingTasks(res.data.tasks);
+      })
+      .catch((err) => {
+        console.error("Error fetching upcoming tasks:", err);
       });
   }, [token, user]);
 
   return (
     <div className="h-full w-full bg-[#FFFFFF] flex items-center justify-center overflow-y-auto">
-    <div className="today w-full h-full p-36">
-      <div className="flex justify-between w-full items-center">
-        <h1 className="text-3xl font-bold">Today's Tasks</h1>
-        <div className="flex gap-1 pb-2 text-gray-800 items-center cursor-pointer opacity-60 ">
-          <i class="ri-list-view text-xl "></i>
-          <p className="text-xl pb-2 font-semibold">view</p>
+      <div className="today w-full h-full p-36">
+        <div className="flex justify-between w-full items-center">
+          <h1 className="text-3xl font-bold">Today's Tasks</h1>
+          
+        </div>
+        <div className="py-10">
+          {todayTasks.length > 0 ? (
+            todayTasks.map((task, index) => (
+              <Task key={task._id || index} task={task} />
+            ))
+          ) : (
+            <p className="text-gray-600">No tasks available for today</p>
+          )}
+        </div>
+        <div className="py-10">
+          <h1 className="text-3xl font-bold">Upcoming Tasks</h1>
+         <div className="py-10">
+         {upcomingTasks.length > 0 ? (
+            upcomingTasks.map((task, index) => (
+              <Task key={task._id || index} task={task} />
+            ))
+          ) : (
+            <p className="text-gray-600">No upcoming tasks available</p>
+          )}
+         </div>
         </div>
       </div>
-      <div className="py-10">
-          <h1 className="text-xl font-bold text-gray-800 mb-10">My Tasks</h1>
-          {personalTask.length > 0 ? personalTask.map((task, index) => (
-            <Task key={index} task={task} />
-          )) : <p className="text-gray-600">No personal tasks available</p>}
-        </div>
     </div>
-  </div>
-  )
+  );
 }
 
-export default Personal_Task
+export default Personal_Task;

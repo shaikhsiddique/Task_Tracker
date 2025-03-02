@@ -13,6 +13,7 @@ function Add_Task() {
     deadlineDate: "",
     attachment: null,
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const errorRef = useRef(null);
 
   const handleChange = (e) => {
@@ -26,13 +27,15 @@ function Add_Task() {
 
   const showError = (errMsg) => {
     if (errorRef.current) {
-      errorRef.current.innerText = errMsg; // Fixed typo
+      errorRef.current.innerText = errMsg;
       gsap.to(errorRef.current, { opacity: 1, duration: 0.5 });
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+
     const formData = new FormData();
     formData.append("name", task.name);
     formData.append("description", task.description);
@@ -56,12 +59,17 @@ function Add_Task() {
         deadlineDate: "",
         attachment: null,
       });
-      navigate("/");
+      navigate("/task/personal-task");
     } catch (err) {
       const errorMessage =
         err.response?.data?.details || "Failed to create task. Please try again.";
       showError(errorMessage);
       console.error("Error creating task:", errorMessage);
+    } finally {
+      
+      setTimeout(() => {
+        setIsSubmitting(false);
+      }, 6000);
     }
   };
 
@@ -119,7 +127,6 @@ function Add_Task() {
                 value={task.deadlineDate}
                 onChange={handleChange}
                 className="w-full p-4 border border-red-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-red-500"
-                
               />
             </div>
             <div className="relative w-full">
@@ -143,7 +150,10 @@ function Add_Task() {
             </div>
             <button
               type="submit"
-              className="w-full p-4 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition duration-200"
+              disabled={isSubmitting}
+              className={`w-full p-4 bg-red-500 text-white font-semibold rounded-lg transition duration-200 ${
+                isSubmitting ? "opacity-50 cursor-not-allowed" : "hover:bg-red-600"
+              }`}
             >
               Add
             </button>
