@@ -1,43 +1,47 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import axios from "../../config/axios";
+import { WorkSpaceContext } from "../../context/WorkSpaceContext";
 
 function RemoveUser() {
   const { id } = useParams();
   const token = localStorage.getItem("Auth-Token");
   const navigate = useNavigate();
-  const location = useLocation();
-  const { workspace} = location.state;
+  const { activeWorkspace } = useContext(WorkSpaceContext);
 
   useEffect(() => {
-
-    if (!workspace || !id || !token) return;
+    if (!activeWorkspace || !id || !token) return;
 
     axios
       .post(
         "/workspace/remove-member",
-        { workspaceId: workspace._id, memberId: id },
+        { workspaceId: activeWorkspace._id, memberId: id },
         { headers: { Authorization: `Bearer ${token}` } }
       )
-      .then((res) =>{
-        console.log(res.data.workspace);
-        axios.post("/notification/create",{
-          receiver : id, type : "notification", data:{
-            message :`You are removed from Workspace "${res.data.workspace.name}"`,
-          }
-        },{
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }).then((res)=>{
-          console.log(res.data);
-        }).catch((err)=>{
-          console.log(err)
-        })
-        navigate(-1)
+      .then((res) => {
+        if (!res.data.workspace) {
+          console.error("Unexpected response, workspace missing");
+          return;
+        }
+
+        axios
+          .post(
+            "/notification/create",
+            {
+              receiver: id,
+              type: "notification",
+              data: {
+                message: `You are removed from Workspace \"${res.data.workspace.name}\"`,
+              },
+            },
+            { headers: { Authorization: `Bearer ${token}` } }
+          )
+          .catch((err) => console.error("Notification Error:", err));
+        
+        navigate(-1);
       })
-      .catch((err) => console.error(err));
-  }, [workspace, id, token, navigate]);
+      .catch((err) => console.error("Remove Member API Error:", err));
+  }, [activeWorkspace, id, token, navigate]);
 
   return <div>Removing User...</div>;
 }

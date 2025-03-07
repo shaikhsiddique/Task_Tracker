@@ -149,8 +149,16 @@ const removeNotification = async (userId, notificationId) => {
         throw new Error("Error removing notification: " + err.message);
     }
 };
+const updateUserService = async (userId, updateData) => {
+    try {
+        const updatedUser = await userModel.findByIdAndUpdate(userId, updateData, { new: true });
+        return updatedUser;
+    } catch (err) {
+        console.error('Error updating user:', err);
+        throw new Error('Failed to update user');
+    }
+};
 
 
 
-
-module.exports = { createUserService, findUserByEmail, findAllUsers , addWorkspace ,removeWorkspace ,addNotification ,removeNotification,findUserById };
+module.exports = { createUserService, findUserByEmail, findAllUsers , addWorkspace ,removeWorkspace ,addNotification ,removeNotification,findUserById ,updateUserService };

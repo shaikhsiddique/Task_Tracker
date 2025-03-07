@@ -1,4 +1,4 @@
-import React, { useContext, useState, useMemo } from "react";
+import React, { useContext, useState, useMemo, useEffect } from "react";
 import Task from "../Task";
 import { UserContext } from "../../context/UserContext";
 
@@ -6,16 +6,12 @@ function Search() {
   const { user } = useContext(UserContext);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Use useMemo to compute filtered tasks from user.tasks directly
   const filteredTasks = useMemo(() => {
-    // if no tasks available, return an empty array
     if (!user?.tasks) return [];
     
-    // if searchTerm is empty, return all tasks
     if (!searchTerm.trim()) return user.tasks;
     
     return user.tasks.filter((task) => {
-      // Make sure task.name exists and do a case-insensitive match
       return task?.name?.toLowerCase().includes(searchTerm.toLowerCase().trim());
     });
   }, [user?.tasks, searchTerm]);

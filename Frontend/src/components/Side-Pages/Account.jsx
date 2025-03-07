@@ -1,12 +1,22 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { UserContext } from "../../context/UserContext";
+import Setting from "../Mini-Pages/Setting";
+import { useGSAP } from '@gsap/react';
+import gsap from "gsap";
+
 
 function Account() {
   const { user } = useContext(UserContext);
+  
   const [activeTask, setActiveTask] = useState([]);
   const [completedTask, setCompletedTask] = useState([]);
   const [incompleteTask, setIncompleteTask] = useState([]);
   const [productivity, setProductivity] = useState(1000);
+
+  const [showSetting, setShowSetting] = useState(false);
+  const showSettingRef = useRef(null);
+
+
 
   function calculateProductivity(activeWorkspaces, assignedTasks, completedTasks, incompleteTasks) {
     const basePoints = 1000;
@@ -22,7 +32,21 @@ function Account() {
     return Math.max(0, basePoints + productivityChange);
   }
   
-
+  useGSAP(() => {
+    if (showSetting) {
+      gsap.to(showSettingRef.current, {
+        opacity:1,
+        zIndex:40,
+        duration:0.5
+      });
+    } else {
+      gsap.to(showSettingRef.current, {
+        opacity:0,
+        zIndex:10,
+        duration:0.5
+      });
+    }
+  }, [showSetting]);
   
   useEffect(() => {
     if (user.tasks) {
@@ -54,7 +78,7 @@ function Account() {
     });
 
   return (
-    <div className="h-full w-full bg-[#FFFFFF] flex items-center justify-center overflow-y-auto">
+    <div className="h-full w-full bg-[#FFFFFF] flex items-center justify-center overflow-y-auto relative">
       <div className="w-full max-w-4xl p-6 bg-gray-50 rounded-lg shadow-lg flex flex-col">
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center gap-4">
@@ -66,7 +90,8 @@ function Account() {
               />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-gray-800">{user.username}</h2>
+              <span className="flex items-center gap-4"><h2 className="text-2xl font-bold text-gray-800">{user.username}</h2>
+              <i onClick={()=>setShowSetting(true)} class="ri-edit-2-fill  cursor-pointer z-20"></i></span>
               <p className="text-sm text-gray-500">{user.email}</p>
               <p className="text-sm text-gray-500">{user.phone}</p>
               <p className="text-sm text-gray-400">
@@ -109,6 +134,9 @@ function Account() {
             <p className="text-2xl font-bold text-red-700">{incompleteTask.length}</p>
           </div>
         </div>
+      </div>
+      <div className=" w-[80%] absolute " ref={showSettingRef}>
+        <Setting setShowSetting={setShowSetting}/>
       </div>
     </div>
   );

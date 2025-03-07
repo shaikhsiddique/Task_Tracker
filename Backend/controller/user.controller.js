@@ -85,6 +85,43 @@ const loginController = async (req, res) => {
     }
 };
 
+const updateProfileController = async (req, res) => {
+    try {
+        const { username, email, phone } = req.body;
+        let imageUrl;
+        
+        
+        const user = await userService.findUserById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        
+        
+        if (req.files && req.files.length > 0) {
+            imageUrl = req.files[0].publicUrl;
+        } else {
+            imageUrl = user.profileimg;
+        }
+        
+       
+        const updatedUser = await userService.updateUserService(req.user.id, {
+            username: username || user.username,
+            email: email || user.email,
+            phone: phone || user.phone,
+            profileimg: imageUrl
+        });
+
+        res.status(200).json({ 
+            message: 'Profile updated successfully', 
+            user: { ...updatedUser.toObject(), password: undefined } 
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'An error occurred while updating profile', details: err.message });
+    }
+};
+
+
 const profileController = async (req, res) => {
     try {
         const user = req.user;
@@ -171,4 +208,4 @@ const getUserByIdController = async (req,res) => {
 
 }
 
-module.exports = {loginController,signupController,profileController,logoutController,getAllUserController,getUserByIdController};
+module.exports = {loginController,signupController,profileController,logoutController,getAllUserController,getUserByIdController,updateProfileController};
