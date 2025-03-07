@@ -11,7 +11,7 @@ function Edit_Workspace({setshowEditWorkspace}) {
       {/* Form Section */}
       <div className="container mx-auto max-w-lg p-8 rounded-lg shadow-lg">
       <div className="pb-6">
-        <h1 className="text-4xl font-bold text-center mb-4">Create Workspace</h1>
+        <h1 className="text-4xl font-bold text-center mb-4">Edit Workspace</h1>
       </div>
         <form action="" className="space-y-6">
           <input
