@@ -20,7 +20,7 @@ router.get('/logout', async (req, res) => {
 router.get('/profile',auth, async (req, res) => {
     userController.profileController(req, res);
 });
-router.post('/update',upload ,async (req,res)=>{
+router.put('/update',auth,upload ,async (req,res)=>{
     userController.updateProfileController(req,res);
 });
 router.get('/all',auth,async (req,res)=>{

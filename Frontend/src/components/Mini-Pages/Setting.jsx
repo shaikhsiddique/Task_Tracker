@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../context/UserContext";
+import axios from '../../config/axios';
 
-function Setting({setShowSetting}) {
+function Setting({ setShowSetting }) {
   const { user, setUser } = useContext(UserContext);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -30,11 +31,15 @@ function Setting({setShowSetting}) {
   };
 
   const handleSubmit = async (e) => {
+    console.log("submited");
     e.preventDefault();
     setLoading(true);
     setMessage("");
+
     try {
-      // Create a form data object to send the updated data, including file if present.
+      const token = localStorage.getItem("Auth-Token"); 
+
+      
       const formData = new FormData();
       formData.append("username", username);
       formData.append("email", email);
@@ -43,33 +48,35 @@ function Setting({setShowSetting}) {
         formData.append("profileimg", profileImage);
       }
 
-      // Replace '/api/user/update' with your actual endpoint
-      const res = await fetch("/api/user/update", {
-        method: "PUT",
-        body: formData,
-      });
-
-      const data = await res.json();
-      if (res.ok) {
-        // Update context with the new user data
-        setUser(data.user);
+      axios.put("/user/update", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }).then((res)=>{
+        setUser(res.data.user); 
         setMessage("Profile updated successfully!");
-      } else {
-        setMessage(data.error || "Failed to update profile");
-      }
+        setShowSetting(false);
+      }).catch((err)=>{
+        console.log(err);
+        setMessage("An error occurred while updating the profile.");
+      })
+      
+      
     } catch (error) {
       console.error(error);
-      setMessage("An error occurred while updating the profile");
+      setMessage("An error occurred while updating the profile.");
     }
+
     setLoading(false);
   };
 
   return (
-    <div className=" w-full flex items-center justify-center bg-gray-50 p-6">
+    <div className="w-full flex items-center justify-center bg-gray-50 p-6">
       <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-lg">
-      <button onClick={()=>setShowSetting(false)} className="w-full flex items-center justify-center">
-      <i  class="ri-arrow-down-wide-line text-2xl"></i>
-      </button>
+        <button onClick={() => setShowSetting(false)} className="w-full flex items-center justify-center">
+          <i className="ri-arrow-down-wide-line text-2xl"></i>
+        </button>
         <h2 className="text-2xl font-bold mb-4 text-center">Account Settings</h2>
         {message && (
           <div className="mb-4 text-center p-2 bg-green-200 text-green-800 rounded">
@@ -79,16 +86,10 @@ function Setting({setShowSetting}) {
         <form onSubmit={handleSubmit}>
           <div className="flex items-center mb-4">
             <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-300 mr-4">
-              <img
-                src={profileImagePreview}
-                alt="Profile"
-                className="w-full h-full object-cover"
-              />
+              <img src={profileImagePreview} alt="Profile" className="w-full h-full object-cover" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Change Profile Image
-              </label>
+              <label className="block text-sm font-medium text-gray-700">Change Profile Image</label>
               <input type="file" onChange={handleImageChange} className="mt-1 block w-full" />
             </div>
           </div>
@@ -129,8 +130,6 @@ function Setting({setShowSetting}) {
             {loading ? "Updating..." : "Update Profile"}
           </button>
         </form>
-
-        
       </div>
     </div>
   );

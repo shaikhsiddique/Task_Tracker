@@ -53,7 +53,6 @@ function Account() {
       const active = user.tasks.filter((task) => task.status === "pending");
       const completed = user.tasks.filter((task) => task.status === "completed");
       const incomplete = user.tasks.filter((task) => task.status === "in-complete");
-
       setActiveTask(active);
       setCompletedTask(completed);
       setIncompleteTask(incomplete);

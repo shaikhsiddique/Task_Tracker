@@ -24,7 +24,7 @@ const createUserService = async (data) => {
 
 const findUserByEmail = async (email) => {
     try {
-        const user = await userModel.findOne({email})
+        const user = await userModel.findOne({email}).populate("tasks");
         return user;
     } catch (err) {
         throw new Error('Error finding user: ' + err.message);

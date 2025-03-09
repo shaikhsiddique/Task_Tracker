@@ -89,9 +89,8 @@ const updateProfileController = async (req, res) => {
     try {
         const { username, email, phone } = req.body;
         let imageUrl;
-        
-        
-        const user = await userService.findUserById(req.user.id);
+
+        const user = await userService.findUserById(req.user._id);
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
