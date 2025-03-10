@@ -72,7 +72,7 @@ function Navbar({ user }) {
           <h3 onClick={() => setActiveMenu(activeMenu === "home" ? null : "home")} className="text-sm md:text-md z-30 font-semibold pl-2 mt-3 md:mt-0">
             Home
           </h3>
-          <div ref={showHomeRef} className="autoAlpha-0 md:opacity-100 flex flex-col items-start space-y-0 md:block z-10 absolute md:static top-32 left-[2%] py-1 bg-zinc-100 md:bg-transparent rounded-lg md:rounded-none">
+          <div ref={showHomeRef} className="autoAlpha-0 md:min-w-32 md:opacity-100 flex flex-col items-start space-y-0 md:block z-10 absolute md:static top-32 left-[2%] py-1 bg-zinc-100 md:bg-transparent rounded-lg md:rounded-none">
             <Link to="/home/search" className={`flex items-center justify-start md:gap-2 w-[99%] p-[3px] -my-1 rounded-md cursor-pointer ${isActive("/home/search") ? "bg-red-500 text-white" : "hover:bg-red-400"}`}>
               <i className="ri-search-line md:text-xl text-sm rounded-full px-1 md:mt-0 mt-[1px]"></i>
               <p className="text-sm md:text-md">Search</p>
