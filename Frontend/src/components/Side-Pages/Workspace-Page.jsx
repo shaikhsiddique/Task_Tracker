@@ -175,17 +175,14 @@ function Workspace_Page() {
   }, [message]);
 
   useEffect(() => {
-    console.log("Active Workspace:", activeWorkspace);
+    
 
     if (!activeWorkspace || !activeWorkspace._id) {
-      console.warn(
-        "Workspace ID is undefined, skipping socket initialization."
-      );
       return;
     }
 
     const socket = initializeSocket(activeWorkspace._id);
-    console.log("Socket initialized with workspace ID:", activeWorkspace._id);
+
 
     listenForCallRequest((data) => {
       navigate(`/collaboration/call/${data.callerId}_${activeWorkspace._id}`, {

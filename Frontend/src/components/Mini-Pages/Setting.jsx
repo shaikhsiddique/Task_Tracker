@@ -12,7 +12,7 @@ function Setting({ setShowSetting }) {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Populate form fields with user data when available
+
   useEffect(() => {
     if (user) {
       setUsername(user.username || "");

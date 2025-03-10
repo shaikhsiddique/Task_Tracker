@@ -6,7 +6,7 @@ function Home({children}) {
   const {user,setUser} = useContext(UserContext);
   return (
     <div className='h-screen w-full flex items-center justify-center bg-zinc-800 overflow-y-hidden'>
-      <div className='w-[95%] h-[93%] bg-zinc-400 flex '>
+      <div className='w-[95%] h-[93%] bg-zinc-400 flex flex-col md:flex-row'>
       <Navbar user={user} />
         {children}
       </div>

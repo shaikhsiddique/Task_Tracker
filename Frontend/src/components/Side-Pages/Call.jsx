@@ -1,27 +1,33 @@
-import React, { useEffect, useRef, useState, useContext } from 'react';
-import { useParams, useLocation, useNavigate } from 'react-router-dom';
-import { 
-  initializeSocket, callRequest, callAccepted, videoJoin, 
-  videoOffer, videoAnswer, videoIceCandidate, callEnded 
-} from '../../config/socket';
-import { UserContext } from '../../context/UserContext';
-import axios from '../../config/axios';
-import { WorkSpaceContext } from '../../context/WorkSpaceContext';
+import React, { useEffect, useRef, useState, useContext } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import {
+  initializeSocket,
+  callRequest,
+  callAccepted,
+  videoJoin,
+  videoOffer,
+  videoAnswer,
+  videoIceCandidate,
+  callEnded,
+} from "../../config/socket";
+import { UserContext } from "../../context/UserContext";
+import axios from "../../config/axios";
+import { WorkSpaceContext } from "../../context/WorkSpaceContext";
 
 const Call = () => {
-  // Always call hooks at the top
-  const { id: routeId } = useParams();
-  const { state } = useLocation();
-  const { activeWorkspace, setActiveWorkspace } = useContext(WorkSpaceContext);
-  const isCaller = state?.isCaller;
-  const { user } = useContext(UserContext);
+  const { id } = useParams(); // Extracts the full ID string from URL
   const navigate = useNavigate();
   const token = localStorage.getItem("Auth-Token");
 
-  // Declare state and refs
+  const { activeWorkspace, setActiveWorkspace } = useContext(WorkSpaceContext);
+  const { user } = useContext(UserContext);
+
+  // Extract values from the ID (format: {contributorId}_{workspaceId}_{isCaller})
+  const [contributorId, workspaceId, isCaller] = id.split("_");
+
   const [caller, setCaller] = useState(null);
   const [socket, setSocket] = useState(null);
-  const [joinedCall, setJoinedCall] = useState(isCaller);
+  const [joinedCall, setJoinedCall] = useState(false);
   const [callActive, setCallActive] = useState(false);
   const [micEnabled, setMicEnabled] = useState(true);
   const [videoEnabled, setVideoEnabled] = useState(true);
@@ -32,152 +38,122 @@ const Call = () => {
   const remoteVideoRef = useRef(null);
   const localStreamRef = useRef(null);
 
-  // Compute values that rely on activeWorkspace
-  const workspaceRoom = activeWorkspace ? activeWorkspace._id : null;
-  const callRoomId = isCaller ? `${user._id}_${routeId}` : `${routeId}_${user._id}`;
-  const configuration = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
+  // Ensure `workspaceId` is defined before using it
+  const callRoomId = user ? `${user._id}_${contributorId}` : null;
+  const configuration = { iceServers: [{ urls: "stun:stun.l.google.com:19302" }] };
 
   // Fetch caller info
   useEffect(() => {
-    axios.get(`/user/${routeId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    .then((res) => setCaller(res.data.user))
-    .catch((err) => console.error("Error fetching caller info:", err));
-  }, [routeId, token]);
+    if (!contributorId || !token) return;
 
-  // Fetch workspace if not loaded or mismatched
-  useEffect(() => {
-    if (!activeWorkspace || activeWorkspace._id !== workspaceRoom) {
-      // Here, workspaceRoom will be null if activeWorkspace is not set.
-      // Use routeId or another URL param to fetch the correct workspace.
-      // For example, if routeId represents workspace ID, adjust accordingly:
-      axios.get(`/workspace/${routeId}`, {
+    axios
+      .get(`/user/${contributorId}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      .then((res) => setActiveWorkspace(res.data))
-      .catch((err) => console.error("Error fetching workspace:", err));
-    }
-  }, [routeId, token, activeWorkspace, setActiveWorkspace]);
+      .then((res) => setCaller(res.data.user))
+      .catch((err) => console.error("❌ Error fetching caller info:", err));
+  }, [contributorId, token]);
 
-  // Initialize socket when workspace is available
+  // Fetch workspace if not loaded
   useEffect(() => {
-    if (!workspaceRoom) return;
-    const newSocket = initializeSocket(workspaceRoom);
+    if (!activeWorkspace || activeWorkspace._id !== workspaceId) {
+      axios
+        .get(`/workspace/${workspaceId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((res) => setActiveWorkspace(res.data))
+        .catch((err) => console.error("❌ Error fetching workspace:", err));
+    }
+  }, [workspaceId, token, activeWorkspace, setActiveWorkspace]);
+
+  // Initialize socket connection (only if workspace exists)
+  useEffect(() => {
+    if (!workspaceId || !user) return;
+
+    const newSocket = initializeSocket(workspaceId);
     if (!newSocket) return;
+
     setSocket(newSocket);
     newSocket.on("connect", () => {
       newSocket.emit("register", { userId: user._id });
-      if (isCaller) {
+
+      if (isCaller === "true") {
         callRequest({
           roomId: callRoomId,
           callerId: user._id,
-          calleeId: routeId,
+          calleeId: contributorId,
           message: `"${user.username}" requested a call`,
         });
       }
     });
+
     newSocket.on("call-accepted", () => {
       setJoinedCall(true);
       setTimeout(() => createOffer(), 1000);
     });
+
     newSocket.on("call-ended", () => {
       endCall();
     });
-    newSocket.emit("join", { roomId: workspaceRoom });
-    return () => newSocket.disconnect();
-  }, [workspaceRoom, user, isCaller, callRoomId, routeId]);
 
-  // Initialize WebRTC when socket is ready and call is joined
+    return () => newSocket.disconnect();
+  }, [workspaceId, user, callRoomId, contributorId, isCaller]);
+
+  // WebRTC setup
   useEffect(() => {
     if (!socket || !joinedCall) return;
+
     videoJoin({ roomId: callRoomId });
     pcRef.current = new RTCPeerConnection(configuration);
-    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+
+    navigator.mediaDevices
+      .getUserMedia({ video: true, audio: true })
       .then((stream) => {
         localStreamRef.current = stream;
         if (localVideoRef.current) localVideoRef.current.srcObject = stream;
-        stream.getTracks().forEach(track => {
+        stream.getTracks().forEach((track) => {
           pcRef.current.addTrack(track, stream);
         });
       })
-      .catch(err => console.error("Media stream error:", err));
+      .catch((err) => console.error("❌ Media stream error:", err));
+
     pcRef.current.ontrack = (event) => {
       if (remoteVideoRef.current) remoteVideoRef.current.srcObject = event.streams[0];
     };
-    pcRef.current.onicecandidate = (event) => {
-      if (event.candidate) {
-        videoIceCandidate({ candidate: event.candidate, roomId: callRoomId });
-      }
-    };
+
     setCallActive(true);
-    socket.on("video-offer", async (data) => {
-      try {
-        await pcRef.current.setRemoteDescription(new RTCSessionDescription(data.offer));
-        const answer = await pcRef.current.createAnswer();
-        await pcRef.current.setLocalDescription(answer);
-        videoAnswer({ answer, roomId: callRoomId });
-      } catch (err) {
-        console.error("Error handling video offer:", err);
-      }
-    });
-    socket.on("video-answer", async (data) => {
-      try {
-        await pcRef.current.setRemoteDescription(new RTCSessionDescription(data.answer));
-      } catch (err) {
-        console.error("Error handling video answer:", err);
-      }
-    });
-    socket.on("video-ice-candidate", async (data) => {
-      try {
-        await pcRef.current.addIceCandidate(new RTCIceCandidate(data.candidate));
-      } catch (err) {
-        console.error("Error handling ICE candidate:", err);
-      }
-    });
+
     return () => {
-      if (socket) {
-        socket.off("video-offer");
-        socket.off("video-answer");
-        socket.off("video-ice-candidate");
-      }
       if (pcRef.current) pcRef.current.close();
     };
   }, [socket, joinedCall]);
 
   const createOffer = async () => {
-    try {
-      const offer = await pcRef.current.createOffer();
-      await pcRef.current.setLocalDescription(offer);
-      videoOffer({ offer, roomId: callRoomId });
-    } catch (error) {
-      console.error("Error creating offer:", error);
-    }
+    if (!pcRef.current) return;
+    const offer = await pcRef.current.createOffer();
+    await pcRef.current.setLocalDescription(offer);
+    videoOffer({ offer, roomId: callRoomId });
   };
 
   const handleAcceptCall = () => {
     if (socket) {
-      callAccepted({ roomId: callRoomId, callerId: routeId, calleeId: user._id });
+      callAccepted({ roomId: callRoomId, callerId: contributorId, calleeId: user._id });
       setJoinedCall(true);
     }
   };
 
   const toggleMic = () => {
-    if (localStreamRef.current) {
-      localStreamRef.current.getAudioTracks().forEach(track => {
-        track.enabled = !track.enabled;
-      });
-      setMicEnabled(prev => !prev);
-    }
+    localStreamRef.current?.getAudioTracks().forEach((track) => {
+      track.enabled = !track.enabled;
+    });
+    setMicEnabled((prev) => !prev);
   };
 
   const toggleVideo = () => {
-    if (localStreamRef.current) {
-      localStreamRef.current.getVideoTracks().forEach(track => {
-        track.enabled = !track.enabled;
-      });
-      setVideoEnabled(prev => !prev);
-    }
+    localStreamRef.current?.getVideoTracks().forEach((track) => {
+      track.enabled = !track.enabled;
+    });
+    setVideoEnabled((prev) => !prev);
   };
 
   const handleVolumeChange = (e) => {
@@ -188,11 +164,6 @@ const Call = () => {
 
   const endCall = () => {
     if (pcRef.current) pcRef.current.close();
-    if (localVideoRef.current && localVideoRef.current.srcObject) {
-      const tracks = localVideoRef.current.srcObject.getTracks();
-      tracks.forEach(track => track.stop());
-      localVideoRef.current.srcObject = null;
-    }
     if (socket) {
       callEnded({ roomId: callRoomId });
       socket.disconnect();
@@ -201,100 +172,33 @@ const Call = () => {
     navigate(-1);
   };
 
-  // Now, always render the same number of hooks.
-  // Conditionally render UI based on whether the workspace is loaded.
-  return (!activeWorkspace || !activeWorkspace._id) ? (
-    <p>Error: Workspace data missing.</p>
+  return !activeWorkspace ? (
+    <p>Loading workspace...</p>
   ) : (
     <div className="text-center h-full w-full flex items-center justify-center relative">
-      {!isCaller && !joinedCall && (
-        caller ? (
-          <div className="border-2 border-gray-700 p-10 bg-zinc-500">
-            <h2 className="text-2xl font-bold mb-4">Incoming Call</h2>
-            <p className="mb-4">Caller: {caller.username}</p>
-            <div>
-              <button
-                onClick={handleAcceptCall}
-                className="bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-2 rounded mr-4"
-              >
-                Accept Call
-              </button>
-              <button
-                onClick={endCall}
-                className="bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-2 rounded"
-              >
-                Reject Call
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div className="mt-12">
-            <p>Loading caller information...</p>
-          </div>
-        )
-      )}
-      {joinedCall && (
-        <>
-          <h2 className="text-3xl font-bold mb-4 absolute top-5 left-[40%]">Video Call</h2>
-          <div className="flex justify-center gap-6">
-            <video
-              ref={localVideoRef}
-              autoPlay
-              playsInline
-              muted
-              className="w-72 border border-gray-300 absolute bottom-14 right-10 rounded"
-            />
-            <video
-              ref={remoteVideoRef}
-              autoPlay
-              playsInline
-              className="w-2/3 left-10 top-20 h-2/3 border border-gray-300 rounded absolute"
-            />
-          </div>
-          {callActive && (
-            <>
-              <div className="absolute bottom-24 left-[17%]">
-                <div className="w-full flex items-center justify-center gap-4">
-                  <button
-                    onClick={toggleMic}
-                    className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded"
-                  > 
-                    <i className={`px-2 ${micEnabled ? 'ri-mic-line' : 'ri-mic-off-line'}`}></i>
-                    {micEnabled ? "Mute Mic" : "Unmute Mic"}
-                  </button>
-                  <button
-                    onClick={toggleVideo}
-                    className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded"
-                  >
-                    <i className={`px-2 ${videoEnabled ? 'ri-video-on-line' : 'ri-video-off-line'}`}></i>
-                    {videoEnabled ? "Turn Off Video" : "Turn On Video"}
-                  </button>
-                  <div className="flex items-center gap-2">
-                    <label htmlFor="volume" className="text-white font-semibold">Volume</label>
-                    <input
-                      id="volume"
-                      type="range"
-                      min="0"
-                      max="1"
-                      step="0.1"
-                      value={remoteVolume}
-                      onChange={handleVolumeChange}
-                      className="accent-blue-500"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="mt-6 absolute bottom-6 left-[30%] flex items-center justify-center">
-                <button
-                  onClick={endCall}
-                  className="bg-red-500 hover:bg-red-800 text-white font-semibold px-12 py-4 text-xl rounded"
-                >
-                  End Call
-                </button>
-              </div>
-            </>
-          )}
-        </>
+      {!joinedCall && caller ? (
+        <div className="border-2 border-gray-700 p-10 bg-zinc-500">
+          <h2 className="text-2xl font-bold mb-4">Incoming Call</h2>
+          <p className="mb-4">Caller: {caller.username}</p>
+          <button onClick={handleAcceptCall} className="bg-green-500 px-6 py-2 rounded mr-4">
+            Accept
+          </button>
+          <button onClick={endCall} className="bg-red-500 px-6 py-2 rounded">
+            Reject
+          </button>
+        </div>
+      ) : (
+        <div className="flex flex-col items-center">
+          <h2 className="text-3xl font-bold mb-4">Video Call</h2>
+          <video ref={localVideoRef} autoPlay playsInline muted className="w-72 border rounded" />
+          <video ref={remoteVideoRef} autoPlay playsInline className="w-2/3 border rounded" />
+          <button onClick={toggleMic}>{micEnabled ? "Mute Mic" : "Unmute Mic"}</button>
+          <button onClick={toggleVideo}>{videoEnabled ? "Turn Off Video" : "Turn On Video"}</button>
+          <input type="range" min="0" max="1" step="0.1" value={remoteVolume} onChange={handleVolumeChange} />
+          <button onClick={endCall} className="bg-red-500 px-12 py-4 text-xl rounded">
+            End Call
+          </button>
+        </div>
       )}
     </div>
   );
