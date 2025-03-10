@@ -77,7 +77,7 @@ function Assign_Task() {
 
   return (
     <div className="h-full w-full bg-[#FFFFFF] flex items-center justify-center overflow-y-hidden">
-      <div className="w-full h-auto p-20">
+      <div className="w-full h-auto md:p-20">
         <div className="mt-10">
           <h1 className="text-4xl font-bold text-center">Assign Task</h1>
         </div>

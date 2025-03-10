@@ -81,7 +81,7 @@ function Edit_Task() {
 
   return (
     <div className="h-full w-full bg-white flex items-center justify-center overflow-y-hidden">
-      <div className="w-full h-auto p-10">
+      <div className="w-full h-auto md:p-10">
         <div className="pb-6">
           <h1 className="text-4xl font-bold text-center mb-4">Edit Task</h1>
         </div>

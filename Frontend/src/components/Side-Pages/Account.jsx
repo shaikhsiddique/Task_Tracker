@@ -80,8 +80,8 @@ function Account() {
     <div className="h-full w-full bg-[#FFFFFF] flex items-center justify-center overflow-y-auto relative">
       <div className="w-full max-w-4xl p-6 bg-gray-50 rounded-lg shadow-lg flex flex-col">
         <div className="flex justify-between items-center mb-6">
-          <div className="flex items-center gap-4">
-            <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-gray-300">
+          <div className="flex items-center md:gap-4 gap-2">
+            <div className="md:w-32 w-20 h-20 md:h-32 rounded-full overflow-hidden border-2 border-gray-300">
               <img
                 src={user.profileimg}
                 alt="Profile"
@@ -89,17 +89,17 @@ function Account() {
               />
             </div>
             <div>
-              <span className="flex items-center gap-4"><h2 className="text-2xl font-bold text-gray-800">{user.username}</h2>
+              <span className="flex items-center md:gap-4 gap-2"><h2 className="md:text-2xl text-xl font-bold text-gray-800">{user.username}</h2>
               <i onClick={()=>setShowSetting(true)} class="ri-edit-2-fill  cursor-pointer z-20"></i></span>
-              <p className="text-sm text-gray-500">{user.email}</p>
+              <p className="text-sm text-gray-500 max-w-10 text-wrap">{user.email}</p>
               <p className="text-sm text-gray-500">{user.phone}</p>
               <p className="text-sm text-gray-400">
                 Joined on {formatDate(user.createdAt)}
               </p>
             </div>
           </div>
-          <div className="relative right-10">
-            <div className="w-32 h-32 rounded-full border-4 border-green-500 flex items-center justify-center text-lg font-bold text-green-500">
+          <div className="relative md:right-10 -right-3">
+            <div className="md:w-32 w-28 h-28 md:h-32 rounded-full border-4 border-green-500 flex items-center justify-center text-lg font-bold text-green-500">
               {productivity ? `${productivity} pts` : "N/A"}
             </div>
             <p className="text-md font-semibold text-gray-600 text-center mt-2">

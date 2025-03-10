@@ -24,7 +24,8 @@ function Workspace_Page() {
   const [showAddUser, setshowAddUser] = useState(false);
   const [showContributorOpt, setShowContributorOpt] = useState(false);
   const [contributor, setContributor] = useState({});
-
+  const [showSidePanel, setShowSidePanel] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
   const navigate = useNavigate();
 
   const [message, setMessage] = useState("");
@@ -33,6 +34,8 @@ function Workspace_Page() {
   const showContributorOptRef = useRef(null);
   const messageBox = useRef(null);
   const conversationArea = useRef(null);
+  const showSidePanelRef = useRef(null)
+
 
   const handleSubmit = (e) => {
     if (message === "") {
@@ -207,24 +210,41 @@ function Workspace_Page() {
     };
   }, [activeWorkspace?._id, user]);
 
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth >= 768);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    if(isDesktop){
+      return
+    }
+    if (showSidePanel) {
+      gsap.to(showSidePanelRef.current, {
+        width: "500px",
+        opacity: 1,
+        duration: 0.3,
+      });
+    } else {
+      gsap.to(showSidePanelRef.current, {
+        width:'0px',
+        opacity: 0,
+        duration: 0.3,
+      });
+    }
+  }, [showSidePanel]);
+
   return (
     <main className="h-full w-full flex">
-      <section className="sec-left relative h-full min-w-80 flex flex-col bg-slate-300">
-        <header className="flex justify-between items-center p-3 px-4 w-full bg-gray-500">
-          <button
-            className="flex items-center gap-2"
-            onClick={() => setshowAddUser(true)}
-          >
-            <i className="ri-add-fill"></i>
-            <p className="text-sm font-semibold">Add Collaborator</p>
-          </button>
-          <button className="py-2 px-3 rounded-full bg-slate-300">
-            <i className="ri-group-fill"></i>
-          </button>
-        </header>
+      <section ref={showSidePanelRef} className="sec-left relative h-full md:min-w-80 opacity-0 md:opacity-100  flex flex-col bg-slate-300 md:block">
 
         <div className="sidePanel w-full h-full flex flex-col gap-2 bg-zinc-200 absolute left-0 transform translate-x-0 top-0 transition-transform duration-300">
           <header className="flex justify-between min-h-[68px] items-center bg-zinc-500">
+          <i onClick={()=>setShowSidePanel(false)} className="ri-arrow-left-wide-line md:hidden text-xl px-2"></i>
             <h1 className="font-semibold px-4">Collaborates</h1>
             {user._id == activeWorkspace.admin ? (
               <button
@@ -260,8 +280,11 @@ function Workspace_Page() {
           ref={conversationArea}
           className="conversation-area h-full flex-grow flex flex-col overflow-y-auto "
         >
-          <div className="title w-full flex items-center justify-center border-b-2 bg-black">
-            <h1 className="text-3xl text-white py-4 font-semibold tracking-wide">
+          <div className="title w-full flex items-center md:justify-center justify-evenly border-b-2 bg-black">
+            {!showSidePanel ? <p className="md:hidden block mt-2 z-20">
+            <i onClick={()=>setShowSidePanel(true)} className="ri-menu-fill text-2xl text-white "></i>
+            </p> :''}
+            <h1 className="md:text-3xl text-2xl text-white py-4 font-semibold tracking-wide">
               {activeWorkspace.name}
             </h1>
           </div>
@@ -287,7 +310,7 @@ function Workspace_Page() {
                 onChange={(e) => setMessage(e.currentTarget.value)}
                 placeholder="Enter Message"
               />
-              <button className="p-3 px-4 bg-black text-white text-xl w-[17%]">
+              <button className={`p-3 px-4 bg-black text-white text-xl w-[17%] ${showSidePanel ? "w-full":''}`}>
                 <i className="ri-send-plane-fill"></i>
               </button>
             </form>

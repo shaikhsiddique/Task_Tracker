@@ -22,26 +22,26 @@ function Navbar({ user }) {
 
   useEffect(() => {
     if (isDesktop) {
-      gsap.set(showHomeRef.current, { opacity: 1 });
-      gsap.set(showTaskRef.current, { opacity: 1 });
-      gsap.set(showWorkSpaceRef.current, { opacity: 1 });
+      gsap.set(showHomeRef.current, { autoAlpha: 1, zIndex: 0 });
+      gsap.set(showTaskRef.current, { autoAlpha: 1, zIndex: 0 });
+      gsap.set(showWorkSpaceRef.current, { autoAlpha: 1, zIndex: 0 });
     } else {
       if (activeMenu === "home") {
-        gsap.to(showHomeRef.current, { opacity: 1, duration: 0.5 });
-        gsap.to(showTaskRef.current, { opacity: 0, duration: 0.5 });
-        gsap.to(showWorkSpaceRef.current, { opacity: 0, duration: 0.5 });
+        gsap.to(showHomeRef.current, { autoAlpha: 1, duration: 0.5, zIndex: 20 });
+        gsap.to(showTaskRef.current, { autoAlpha: 0, duration: 0.5, zIndex: 0 });
+        gsap.to(showWorkSpaceRef.current, { autoAlpha: 0, duration: 0.5, zIndex: 0 });
       } else if (activeMenu === "task") {
-        gsap.to(showTaskRef.current, { opacity: 1, duration: 0.5 });
-        gsap.to(showHomeRef.current, { opacity: 0, duration: 0.5 });
-        gsap.to(showWorkSpaceRef.current, { opacity: 0, duration: 0.5 });
+        gsap.to(showTaskRef.current, { autoAlpha: 1, duration: 0.5, zIndex: 20 });
+        gsap.to(showHomeRef.current, { autoAlpha: 0, duration: 0.5, zIndex: 0 });
+        gsap.to(showWorkSpaceRef.current, { autoAlpha: 0, duration: 0.5, zIndex: 0 });
       } else if (activeMenu === "workspace") {
-        gsap.to(showWorkSpaceRef.current, { opacity: 1, duration: 0.5 });
-        gsap.to(showHomeRef.current, { opacity: 0, duration: 0.5 });
-        gsap.to(showTaskRef.current, { opacity: 0, duration: 0.5 });
+        gsap.to(showWorkSpaceRef.current, { autoAlpha: 1, duration: 0.5, zIndex: 20 });
+        gsap.to(showHomeRef.current, { autoAlpha: 0, duration: 0.5, zIndex: 0 });
+        gsap.to(showTaskRef.current, { autoAlpha: 0, duration: 0.5, zIndex: 0 });
       } else {
-        gsap.to(showHomeRef.current, { opacity: 0, duration: 0.5 });
-        gsap.to(showTaskRef.current, { opacity: 0, duration: 0.5 });
-        gsap.to(showWorkSpaceRef.current, { opacity: 0, duration: 0.5 });
+        gsap.to(showHomeRef.current, { autoAlpha: 0, duration: 0.5, zIndex: 0 });
+        gsap.to(showTaskRef.current, { autoAlpha: 0, duration: 0.5, zIndex: 0 });
+        gsap.to(showWorkSpaceRef.current, { autoAlpha: 0, duration: 0.5, zIndex: 0 });
       }
     }
   }, [activeMenu, isDesktop]);
@@ -69,8 +69,10 @@ function Navbar({ user }) {
       </header>
       <div className="flex md:flex-col flex-row items-center justify-center md:items-start gap-4 md:gap-0">
         <div className="flex flex-col items-start md:space-y-0 ">
-          <h3 onClick={() => setActiveMenu(activeMenu === "home" ? null : "home")} className="text-sm md:text-md z-30 font-semibold pl-2 mt-3 md:mt-0">Home</h3>
-          <div ref={showHomeRef} className="opacity-0 md:opacity-100 flex flex-col items-start space-y-0 md:block z-10 absolute md:static top-32 left-[2%] py-1 bg-zinc-100 md:bg-transparent rounded-lg md:rounded-none">
+          <h3 onClick={() => setActiveMenu(activeMenu === "home" ? null : "home")} className="text-sm md:text-md z-30 font-semibold pl-2 mt-3 md:mt-0">
+            Home
+          </h3>
+          <div ref={showHomeRef} className="autoAlpha-0 md:opacity-100 flex flex-col items-start space-y-0 md:block z-10 absolute md:static top-32 left-[2%] py-1 bg-zinc-100 md:bg-transparent rounded-lg md:rounded-none">
             <Link to="/home/search" className={`flex items-center justify-start md:gap-2 w-[99%] p-[3px] -my-1 rounded-md cursor-pointer ${isActive("/home/search") ? "bg-red-500 text-white" : "hover:bg-red-400"}`}>
               <i className="ri-search-line md:text-xl text-sm rounded-full px-1 md:mt-0 mt-[1px]"></i>
               <p className="text-sm md:text-md">Search</p>
@@ -94,8 +96,10 @@ function Navbar({ user }) {
           </div>
         </div>
         <div className="flex flex-col items-start space-y-0 mt-3">
-          <h3 onClick={() => setActiveMenu(activeMenu === "task" ? null : "task")} className="text-sm md:text-md font-semibold">Task Management</h3>
-          <div ref={showTaskRef} className="opacity-0 md:opacity-100 flex flex-col items-start space-y-0 md:block z-10 absolute md:static top-32 left-[20%] py-1 bg-zinc-100 md:bg-transparent rounded-lg">
+          <h3 onClick={() => setActiveMenu(activeMenu === "task" ? null : "task")} className="text-sm md:text-md font-semibold">
+            Task Management
+          </h3>
+          <div ref={showTaskRef} className="autoAlpha-0 md:opacity-100 flex flex-col items-start space-y-0 md:block z-10 absolute md:static top-32 left-[20%] py-1 bg-zinc-100 md:bg-transparent rounded-lg">
             <Link to="/task/add-task" className={`flex items-center justify-start gap-2 w-[99%] p-1 rounded-md cursor-pointer ${isActive("/task/add-task") ? "bg-red-500 text-white" : "hover:bg-red-400"}`}>
               <i className="ri-add-circle-fill text-xl rounded-full px-1"></i>
               <p className="text-sm md:text-md font-normal">Add task</p>
@@ -107,8 +111,10 @@ function Navbar({ user }) {
           </div>
         </div>
         <div className="flex flex-col items-start space-y-0 mt-3">
-          <h3 onClick={() => setActiveMenu(activeMenu === "workspace" ? null : "workspace")} className="text-sm md:text-md font-semibold">Workspace Management</h3>
-          <div ref={showWorkSpaceRef} className="opacity-0 flex flex-col items-start space-y-0 md:block z-10 absolute md:static top-32 left-[58%] py-1 bg-zinc-100 md:bg-transparent rounded-lg">
+          <h3 onClick={() => setActiveMenu(activeMenu === "workspace" ? null : "workspace")} className="text-sm md:text-md font-semibold">
+            Workspace Management
+          </h3>
+          <div ref={showWorkSpaceRef} className="autoAlpha-0 flex flex-col items-start space-y-0 md:block z-10 absolute md:static top-32 left-[58%] py-1 bg-zinc-100 md:bg-transparent rounded-lg">
             <Link to="/workspace/" className={`flex items-center justify-start gap-2 w-[99%] p-1 rounded-md cursor-pointer ${isActive("/workspace/") ? "bg-red-500 text-white" : "hover:bg-red-400"}`}>
               <i className="ri-group-line text-xl rounded-full px-1"></i>
               <p className="text-sm md:text-md font-normal">Workspace</p>

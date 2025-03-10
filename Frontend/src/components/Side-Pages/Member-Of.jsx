@@ -37,7 +37,7 @@ function Member_Of() {
 
   return (
     <div className="h-full w-full bg-[#FFFFFF] flex items-center justify-center">
-      <div className="today w-full h-full p-36">
+      <div className="today w-full h-full md:p-36 p-6">
         <div className="flex justify-between w-full items-center">
           <h1 className="text-3xl font-bold">WorkSpace's</h1>
         </div>

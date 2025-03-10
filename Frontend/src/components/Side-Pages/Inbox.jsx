@@ -8,7 +8,7 @@ function Inbox() {
 
   return (
     <div className="h-full w-full bg-[#FFFFFF] flex  items-center justify-center overflow-y-auto ">
-      <div className="w-full h-full p-40">
+      <div className="w-full h-full md:p-40 p-10">
         <div className="flex justify-between items-center pb-3">
           <h1 className="text-3xl font-bold text-gray-900">Inbox</h1>
         </div>

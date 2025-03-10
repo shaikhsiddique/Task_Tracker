@@ -3,7 +3,7 @@ import React from 'react'
 function Edit_Workspace({setshowEditWorkspace}) {
   return (
     <div className="h-full w-full bg-[#FFFFFF] flex items-center justify-center overflow-y-auto ">
-    <div className="w-full h-auto p-20">
+    <div className="w-full h-auto md:p-20">
       
       <div onClick={()=>setshowEditWorkspace(false)} className='flex items-center justify-center'>
       <i className="ri-arrow-down-wide-fill text-4xl"></i>

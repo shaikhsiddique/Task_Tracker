@@ -43,14 +43,14 @@ function All_Workspace() {
 
   return (
     <div className="h-full w-full bg-[#FFFFFF] flex items-center justify-center overflow-y-hidden">
-    <div className="today w-full h-full p-36">
+    <div className="today w-full h-full md:p-36 p-6">
       <div className="flex justify-between w-full items-center">
         <h1 className="text-3xl font-bold">WorkSpace's </h1>
         <div onClick={()=>setshowAddWorkspace(true)} className="flex gap-1 pb-2 text-gray-800 items-center cursor-pointer  ">
             <div className='flex items-center justify-center'>
             <i className="ri-group-line text-2xl "></i>
             </div>
-          <p className="text-xl font-semibold">Add Workspace</p>
+          <p className="md:text-xl text-base font-semibold">Add Workspace</p>
         </div>
       </div>
       <div className="py-10 ">

@@ -32,7 +32,7 @@ function Today_Tasks() {
 
   return (
     <div className="h-full w-full bg-[#FFFFFF] flex items-center justify-center overflow-y-auto">
-      <div className="today w-full h-full p-36">
+      <div className="today w-full h-full md:p-36 p-8">
         <div className="flex justify-between w-full items-center">
           <h1 className="text-3xl font-bold">Today's Tasks</h1>
         </div>
