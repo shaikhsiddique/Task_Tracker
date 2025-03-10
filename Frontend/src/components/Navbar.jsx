@@ -7,29 +7,44 @@ function Navbar({ user }) {
   const location = useLocation();
   const isActive = (path) => location.pathname === path;
   const [activeMenu, setActiveMenu] = useState(null);
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
   const showHomeRef = useRef(null);
   const showTaskRef = useRef(null);
   const showWorkSpaceRef = useRef(null);
 
   useEffect(() => {
-    if (activeMenu === "home") {
-      gsap.to(showHomeRef.current, { opacity: 1, duration: 0.5 });
-      gsap.to(showTaskRef.current, { opacity: 0, duration: 0.5 });
-      gsap.to(showWorkSpaceRef.current, { opacity: 0, duration: 0.5 });
-    } else if (activeMenu === "task") {
-      gsap.to(showTaskRef.current, { opacity: 1, duration: 0.5 });
-      gsap.to(showHomeRef.current, { opacity: 0, duration: 0.5 });
-      gsap.to(showWorkSpaceRef.current, { opacity: 0, duration: 0.5 });
-    } else if (activeMenu === "workspace") {
-      gsap.to(showWorkSpaceRef.current, { opacity: 1, duration: 0.5 });
-      gsap.to(showHomeRef.current, { opacity: 0, duration: 0.5 });
-      gsap.to(showTaskRef.current, { opacity: 0, duration: 0.5 });
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth >= 768);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (isDesktop) {
+      gsap.set(showHomeRef.current, { opacity: 1 });
+      gsap.set(showTaskRef.current, { opacity: 1 });
+      gsap.set(showWorkSpaceRef.current, { opacity: 1 });
     } else {
-      gsap.to(showHomeRef.current, { opacity: 0, duration: 0.5 });
-      gsap.to(showTaskRef.current, { opacity: 0, duration: 0.5 });
-      gsap.to(showWorkSpaceRef.current, { opacity: 0, duration: 0.5 });
+      if (activeMenu === "home") {
+        gsap.to(showHomeRef.current, { opacity: 1, duration: 0.5 });
+        gsap.to(showTaskRef.current, { opacity: 0, duration: 0.5 });
+        gsap.to(showWorkSpaceRef.current, { opacity: 0, duration: 0.5 });
+      } else if (activeMenu === "task") {
+        gsap.to(showTaskRef.current, { opacity: 1, duration: 0.5 });
+        gsap.to(showHomeRef.current, { opacity: 0, duration: 0.5 });
+        gsap.to(showWorkSpaceRef.current, { opacity: 0, duration: 0.5 });
+      } else if (activeMenu === "workspace") {
+        gsap.to(showWorkSpaceRef.current, { opacity: 1, duration: 0.5 });
+        gsap.to(showHomeRef.current, { opacity: 0, duration: 0.5 });
+        gsap.to(showTaskRef.current, { opacity: 0, duration: 0.5 });
+      } else {
+        gsap.to(showHomeRef.current, { opacity: 0, duration: 0.5 });
+        gsap.to(showTaskRef.current, { opacity: 0, duration: 0.5 });
+        gsap.to(showWorkSpaceRef.current, { opacity: 0, duration: 0.5 });
+      }
     }
-  }, [activeMenu]);
+  }, [activeMenu, isDesktop]);
 
   return (
     <div className="navbar md:h-full h-[20vh] md:w-[25vw] w-full flex flex-col bg-[#FCFAF6] px-3 py-5 relative">
@@ -55,7 +70,7 @@ function Navbar({ user }) {
       <div className="flex md:flex-col flex-row items-center justify-center md:items-start gap-4 md:gap-0">
         <div className="flex flex-col items-start md:space-y-0 ">
           <h3 onClick={() => setActiveMenu(activeMenu === "home" ? null : "home")} className="text-sm md:text-md z-30 font-semibold pl-2 mt-3 md:mt-0">Home</h3>
-          <div ref={showHomeRef} className="opacity-0 flex flex-col items-start space-y-0 md:opacity-100 md:block z-10 absolute md:static top-32 left-[2%] py-1 bg-zinc-100 md:bg-transparent rounded-lg md:rounded-none">
+          <div ref={showHomeRef} className="opacity-0 md:opacity-100 flex flex-col items-start space-y-0 md:block z-10 absolute md:static top-32 left-[2%] py-1 bg-zinc-100 md:bg-transparent rounded-lg md:rounded-none">
             <Link to="/home/search" className={`flex items-center justify-start md:gap-2 w-[99%] p-[3px] -my-1 rounded-md cursor-pointer ${isActive("/home/search") ? "bg-red-500 text-white" : "hover:bg-red-400"}`}>
               <i className="ri-search-line md:text-xl text-sm rounded-full px-1 md:mt-0 mt-[1px]"></i>
               <p className="text-sm md:text-md">Search</p>
@@ -80,7 +95,7 @@ function Navbar({ user }) {
         </div>
         <div className="flex flex-col items-start space-y-0 mt-3">
           <h3 onClick={() => setActiveMenu(activeMenu === "task" ? null : "task")} className="text-sm md:text-md font-semibold">Task Management</h3>
-          <div ref={showTaskRef} className="opacity-0 flex flex-col items-start space-y-0 md:block z-10 absolute md:static top-32 left-[20%] py-1 bg-zinc-100 md:bg-transparent rounded-lg">
+          <div ref={showTaskRef} className="opacity-0 md:opacity-100 flex flex-col items-start space-y-0 md:block z-10 absolute md:static top-32 left-[20%] py-1 bg-zinc-100 md:bg-transparent rounded-lg">
             <Link to="/task/add-task" className={`flex items-center justify-start gap-2 w-[99%] p-1 rounded-md cursor-pointer ${isActive("/task/add-task") ? "bg-red-500 text-white" : "hover:bg-red-400"}`}>
               <i className="ri-add-circle-fill text-xl rounded-full px-1"></i>
               <p className="text-sm md:text-md font-normal">Add task</p>
