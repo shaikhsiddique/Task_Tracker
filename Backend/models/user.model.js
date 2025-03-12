@@ -38,11 +38,6 @@ const userSchema = new mongoose.Schema({
             default: null
         }
     ],
-    productivity: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Productivity",
-        default: null
-    },
     notifications: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Notification",

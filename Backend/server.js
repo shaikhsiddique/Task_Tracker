@@ -9,7 +9,7 @@ const redisClient = require("./service/redis.service");
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
 const connectedUsers = {};
-
+const {userModel} = require('./models/user.model');
 
 const port = process.env.PORT || 5000;
 
@@ -46,7 +46,7 @@ io.on("connection", (socket) => {
     const aiPresentInMessage = message.includes("@ai");
     if (aiPresentInMessage) {
       const prompt = message.replace("@ai", "");
-      const result = await generateResult(message);
+      const result = await generateResult(prompt,data.sender);
       io.to(socket.roomId).emit("workspace-message", { message: result, sender: { id: "ai", username: `@AI-${data.sender.username}` } });
       return;
     }
