@@ -227,12 +227,14 @@ function Workspace_Page() {
       gsap.to(showSidePanelRef.current, {
         width: "500px",
         opacity: 1,
+        visibility: "visible",
         duration: 0.3,
       });
     } else {
       gsap.to(showSidePanelRef.current, {
-        width:'0px',
+        width: '0px',
         opacity: 0,
+        visibility: "hidden",
         duration: 0.3,
       });
     }
@@ -240,7 +242,7 @@ function Workspace_Page() {
 
   return (
     <main className="h-full w-full flex">
-      <section ref={showSidePanelRef} className="sec-left relative h-full md:min-w-80 opacity-0 md:opacity-100  flex flex-col bg-slate-300 md:block">
+      <section ref={showSidePanelRef} className="sec-left relative h-full md:min-w-80 hidden md:visible  flex flex-col bg-slate-300 md:block">
 
         <div className="sidePanel w-full h-full flex flex-col gap-2 bg-zinc-200 absolute left-0 transform translate-x-0 top-0 transition-transform duration-300">
           <header className="flex justify-between min-h-[68px] items-center bg-zinc-500">

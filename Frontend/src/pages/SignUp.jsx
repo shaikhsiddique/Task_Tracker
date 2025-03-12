@@ -58,7 +58,7 @@ function SignUp() {
       })
       .catch((err) => {
         console.log(err);
-        messageRef.current.textContent = err.response.data.error;
+        messageRef.current.textContent = err.response.data.details || err.response.data.error ;
         gsap.to(messageRef.current, { opacity: 1, duration: 0.2 });
       });
     

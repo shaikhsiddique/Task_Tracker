@@ -74,8 +74,8 @@ function Add_Task() {
   };
 
   return (
-    <div className="h-full w-full bg-[#FFFFFF] flex items-center justify-center overflow-y-hidden">
-      <div className="w-full h-auto md:p-20">
+    <div className="h-full w-full bg-[#FFFFFF] flex items-center justify-center overflow-y-auto">
+      <div className="w-full h-auto md:p-12">
         <div className="mt-10">
           <h1 className="text-4xl font-bold text-center">Create Task</h1>
         </div>

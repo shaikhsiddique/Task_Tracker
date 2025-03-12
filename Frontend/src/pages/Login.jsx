@@ -23,7 +23,7 @@ function Login() {
         navigate('/');
       })
       .catch((err) => {
-        messgaeRef.current.textContent = err.response.data.error;
+        messgaeRef.current.textContent = err.response.data.details || err.response.data.error;
         gsap.to(messgaeRef.current, {
           opacity: 1,
           duration: 0.2,
