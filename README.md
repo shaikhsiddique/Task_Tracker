@@ -1,6 +1,10 @@
-# Task Tracker - MERN Stack Website
 
-Task Tracker is a full-featured MERN stack application designed to streamline personal task management and enhance team collaboration with real-time chat, video calls, email notifications, and AI-powered assistance.
+# Task Tracker - MERN Stack Application
+
+Task Tracker is a full-featured MERN stack application that streamlines personal task management and enhances team collaboration with real-time chat, video calls, email notifications, and AI-powered assistance.
+
+## Live Demo
+Access the live demo here: [https://task-tracker-cyan-alpha.vercel.app/](https://task-tracker-cyan-alpha.vercel.app/)
 
 ## Table of Contents
 - [Authentication](#authentication)
@@ -18,30 +22,33 @@ Task Tracker is a full-featured MERN stack application designed to streamline pe
 - [Collaboration](#collaboration)
 - [AI Integration](#ai-integration)
 - [Account Overview & Productivity](#account-overview--productivity)
+- [Tutorial / Guide](#tutorial--guide)
 - [Download](#download)
 
 ## Authentication
 
 ### Login & Signup
-Users can register and log in securely using email and password, with authentication managed via JWT tokens.
+Users can securely register and log in using their email and password. Authentication is managed via JWT tokens.
 
 ## Task Management
 
 ### Create Task
-Users can create tasks with details like title, description, due date, and priority.
+Users can create tasks by providing details such as title, description, due date, and priority.
 
 ### Search Task
-A search feature lets users quickly find tasks based on keywords, status, or deadlines.
+A search feature allows users to quickly find tasks using keywords, status, or deadlines.
 
 ### Display Personal Tasks
-Tasks are presented on a personal dashboard, enabling users to view and manage their to-do lists.
+All tasks are displayed on a personal dashboard, enabling users to manage their to-do lists efficiently.
 
 ### Assign Task
-Tasks can be delegated to other workspace members for better workload distribution.
+Tasks can be delegated to other workspace members, allowing for better workload distribution.
 
 ### Task Completion & Deadline Notifications
-- **Completion:** Mark tasks as complete by clicking a circle; a filled circle indicates completion, while an outlined circle shows pending status.
-- **Deadline Notifications:** Email reminders and in-app notifications keep users informed about upcoming deadlines.
+- **Task Completion:**  
+  Mark tasks as complete by clicking the task circle. A filled circle indicates completion, while an outlined circle shows a pending task.
+- **Deadline Notifications:**  
+  Receive email reminders and in-app notifications about approaching deadlines.
 
 ## Workspace Management
 
@@ -49,27 +56,72 @@ Tasks can be delegated to other workspace members for better workload distributi
 When a user creates a workspace, they automatically become its admin, gaining full control over workspace settings.
 
 ### Editing & Joining Workspaces
-Admins can edit workspace details. To join a workspace, either the admin sends an invitation (which the user must accept) or the user sends a join request (which the admin must approve).
+- **Editing:**  
+  Admins can edit workspace details.
+- **Joining:**  
+  To join a workspace, the admin sends an invitation or the user sends a join request. Notifications are sent to the appropriate party for acceptance.
 
 ### Adding Members
-Admins add members by sending requests; the targeted user receives an in-app notification to accept the invite. Similarly, when a user requests to join, a notification is sent to the admin for approval.
+Admins can add members by sending requests. The targeted user receives an in-app notification to accept the invite. Similarly, when a user requests to join a workspace, a notification is sent to the admin for approval.
 
 ## Collaboration
 
 Within a workspace, users can:
-- **Chat:** Engage in real-time conversations.
-- **Assign Tasks:** Delegate tasks to colleagues.
-- **Video Calls:** Initiate video calls for face-to-face collaboration.
+- **Chat:**  
+  Engage in real-time text-based communication.
+- **Assign Tasks:**  
+  Delegate tasks to colleagues directly.
+- **Video Calls:**  
+  Initiate video calls for live collaboration and meetings.
 
 ## AI Integration
-Workspace chat supports AI assistance. When a message is prefixed with `@ai`, it is directed to the AI, which responds with `@ai` and the sender’s username.
+
+The workspace chat includes AI integration. If a message is prefixed with `@ai`, it is directed to the AI, which responds with `@ai` and the sender’s username.
 
 ## Account Overview & Productivity
+
 The account page displays:
-- Personal details
-- Total tasks, assigned tasks, completed tasks, and tasks with met deadlines
-- A productivity score (starting at 1000) that updates based on task performance
+- Personal details (e.g., username, email, profile image)
+- A summary of tasks: total tasks, assigned tasks, completed tasks, and tasks with met deadlines
+- A productivity score (starting at 1000) that adjusts based on task performance
+
+## Tutorial / Guide
+
+### Getting Started
+1. **Clone the Repository:**  
+   ```bash
+   git clone https://github.com/username/task-tracker.git
+   ```
+2. **Install Dependencies:**  
+   Navigate to the project directory and run:
+   ```bash
+   npm install
+   ```
+3. **Configure Environment Variables:**  
+   Create a `.env` file in the root directory with your configurations (e.g., MongoDB URI, JWT secret).
+4. **Run the Application:**  
+   Start the server with:
+   ```bash
+   npm start
+   ```
+5. **Access the Application:**  
+   Open your browser and navigate to [https://task-tracker-cyan-alpha.vercel.app/](https://task-tracker-cyan-alpha.vercel.app/)
+
+### Using the Application
+- **Signup & Onboarding:**  
+  Sign up by providing your username, unique email, phone number, and password. Once registered, set up your profile and explore your dashboard.
+- **Task Operations:**  
+  Create new tasks, search through existing ones, assign tasks to colleagues, and mark them as complete by clicking on the task icon.
+- **Workspace Collaboration:**  
+  Create a workspace to start collaborating. Invite members, accept join requests, and use chat and video call features to communicate in real time.
+- **AI Chat Feature:**  
+  Use `@ai` in the chat to interact with the AI assistant. The assistant will respond accordingly, adding an extra layer of support within your workspace.
 
 ## Download
-You can download the complete Task Tracker repository from the following link:  
-[Download Task Tracker](https://github.com/username/task-tracker)
+
+Clone the repository to get started with Task Tracker:
+```bash
+git clone https://github.com/username/task-tracker.git
+```
+
+Alternatively, download it directly from GitHub: [Download Task Tracker](https://github.com/shaikhsiddique/Task_Tracker)
