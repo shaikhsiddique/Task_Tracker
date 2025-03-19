@@ -40,6 +40,15 @@ const findUserById = async (id) => {
     }
 }
 
+const deleteUserById = async (id) => {
+    try {
+        const user = await userModel.findByIdAndDelete(id);
+        return user;
+    } catch (err) {
+        throw new Error('Error finding user: ' + err.message);
+    }
+}
+
 const findAllUsers = async () => {
     try {
         const users = await userModel.find();
@@ -161,4 +170,4 @@ const updateUserService = async (userId, updateData) => {
 
 
 
-module.exports = { createUserService, findUserByEmail, findAllUsers , addWorkspace ,removeWorkspace ,addNotification ,removeNotification,findUserById ,updateUserService };
+module.exports = { createUserService, findUserByEmail, findAllUsers , addWorkspace ,removeWorkspace ,addNotification ,removeNotification,findUserById ,updateUserService ,deleteUserById };

@@ -66,7 +66,7 @@ function All_Workspace() {
         </div>
       </div>
     </div>
-    <div ref={addWorkSpace} className='h-[93%] w-[60%]  translate-y-[200%]  bg-[#FFFFFF] flex items-center justify-center absolute'>
+    <div ref={addWorkSpace} className='md:h-[93%] h-[70%] w-[60%]  translate-y-[200%]  bg-[#FFFFFF] flex items-center justify-center absolute'>
       <Add_Workspace setshowAddWorkspace={setshowAddWorkspace}/>
     </div>
   </div>

@@ -55,7 +55,7 @@ function Navbar({ user }) {
           </div>
           <div className="flex items-center justify-start gap-1">
             <h3 className="text-lg font-semibold">{user.username}</h3>
-            <i className="ri-arrow-down-s-line text-2xl pt-1 hidden sm:block"></i>
+            <Link to="/home/account" className="ri-arrow-down-s-line text-2xl pt-1 hidden sm:block"></Link>
           </div>
         </div>
         <div className="flex items-center justify-center gap-2">

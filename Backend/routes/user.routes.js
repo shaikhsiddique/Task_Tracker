@@ -30,5 +30,8 @@ router.get("/:id",auth,async (req,res)=>{
     userController.getUserByIdController(req,res);
 })
 
+router.delete('/:id',auth, async (req,res)=>{
+    userController.deleteProfileController(req,res);
+})
 
 module.exports = router;

@@ -120,6 +120,19 @@ const updateProfileController = async (req, res) => {
     }
 };
 
+const deleteProfileController = async (req,res) =>{
+    try {
+        const id = req.params.id;
+    const user = await userService.deleteUserById(id);
+    res.status(200).json({
+        message: 'User profile deleted successfully',
+        user: user
+    });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
 
 const profileController = async (req, res) => {
     try {
@@ -207,4 +220,6 @@ const getUserByIdController = async (req,res) => {
 
 }
 
-module.exports = {loginController,signupController,profileController,logoutController,getAllUserController,getUserByIdController,updateProfileController};
+module.exports = {loginController,signupController,profileController,logoutController,getAllUserController,getUserByIdController,updateProfileController,
+        deleteProfileController
+};
