@@ -3,6 +3,8 @@
 
 Task Tracker is a full-featured MERN stack application that streamlines personal task management and enhances team collaboration with real-time chat, video calls, email notifications, and AI-powered assistance.
 
+![Screenshot](https://firebasestorage.googleapis.com/v0/b/ecommerce-ab165.appspot.com/o/Screenshot%202025-04-05%20232047.png?alt=media&token=96c566c7-d08b-4a3f-8176-e4be91852ee0)
+
 ## Live Demo
 Access the live demo here: [https://task-tracker-cyan-alpha.vercel.app/](https://task-tracker-cyan-alpha.vercel.app/)
 
