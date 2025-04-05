@@ -88,6 +88,8 @@ Within a workspace, users can:
 ## AI Integration
 
 The workspace chat includes AI integration. If a message is prefixed with `@ai`, it is directed to the AI, which responds with `@ai` and the sender’s username.
+<br>
+![Screenshot](https://firebasestorage.googleapis.com/v0/b/ecommerce-ab165.appspot.com/o/Screenshot%202025-04-05%20234248.png?alt=media&token=590deed5-d135-4026-a413-520fa8a7b3f1)
 
 ## Account Overview & Productivity
 
