@@ -5,13 +5,13 @@ Task Tracker is a full-featured MERN stack application that streamlines personal
 
 ### 🖥️ Home Page (Desktop View)
 
-![Screenshot](https://firebasestorage.googleapis.com/v0/b/ecommerce-ab165.appspot.com/o/Screenshot%202025-04-05%20232047.png?alt=media&token=96c566c7-d08b-4a3f-8176-e4be91852ee0)
+![Screenshot](https://firebasestorage.googleapis.com/v0/b/ecommerce-ab165.appspot.com/o/Screenshot%202025-04-05%20232047.png?alt=media&token=e6372f9b-7ad4-402d-8280-49b2f47042ba)
 
 ---
 
 ### 📱 Home Page (Mobile View)
 
-![Screenshot](https://firebasestorage.googleapis.com/v0/b/ecommerce-ab165.appspot.com/o/Screenshot%202025-04-05%20233136.png?alt=media&token=e556a95d-c246-4511-8c2d-8ad1970fb907)
+![Screenshot](https://firebasestorage.googleapis.com/v0/b/ecommerce-ab165.appspot.com/o/Screenshot%202025-04-05%20233319.png?alt=media&token=5e503793-ccba-4021-95ca-75544a7cdaf7)
 
 
 ## Live Demo
