@@ -97,7 +97,7 @@ The account page displays:
 - Personal details (e.g., username, email, profile image)
 - A summary of tasks: total tasks, assigned tasks, completed tasks, and tasks with met deadlines
 - A productivity score (starting at 1000) that adjusts based on task performance
-<br>
+
 ![Screenshot](https://firebasestorage.googleapis.com/v0/b/ecommerce-ab165.appspot.com/o/Screenshot%202025-04-05%20233136.png?alt=media&token=e556a95d-c246-4511-8c2d-8ad1970fb907)
 
 
