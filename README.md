@@ -74,6 +74,8 @@ When a user creates a workspace, they automatically become its admin, gaining fu
 
 ### Adding Members
 Admins can add members by sending requests. The targeted user receives an in-app notification to accept the invite. Similarly, when a user requests to join a workspace, a notification is sent to the admin for approval.
+![Screenshot](https://firebasestorage.googleapis.com/v0/b/ecommerce-ab165.appspot.com/o/Screenshot%202025-04-05%20233240.png?alt=media&token=cc049cb2-2fe4-4332-9197-a13e5ec3ef18)
+
 
 ## Collaboration
 
