@@ -100,6 +100,7 @@ The account page displays:
 <br>
 ![Screenshot](https://firebasestorage.googleapis.com/v0/b/ecommerce-ab165.appspot.com/o/Screenshot%202025-04-05%20233136.png?alt=media&token=e556a95d-c246-4511-8c2d-8ad1970fb907)
 
+
 ## Tutorial / Guide
 
 ### Getting Started
