@@ -345,7 +345,7 @@ function Workspace_Page() {
               }}
               className="p-2  "
             >
-              <i class="ri-close-large-line"></i>
+              <i className="ri-close-large-line"></i>
             </button>
           </header>
           <div className="option-list flex flex-col gap-4 mb-16 max-h-96 overflow-auto p-4 bg-white shadow-md rounded-md">
@@ -368,13 +368,15 @@ function Workspace_Page() {
               </Link>
             ) : null}
             {activeWorkspace && activeWorkspace._id && (
-              <Link
-                to={`/collaboration/call/${contributor._id}_${activeWorkspace._id}_true`}
-                className="option flex items-center gap-3 p-3 hover:bg-gray-100 rounded-md cursor-pointer"
-              >
-                <i className="ri-user-voice-fill text-lg text-green-600"></i>
-                <p className="text-sm font-medium text-gray-700">Call</p>
-              </Link>
+             <Link
+             to={`/collaboration/call/${contributor._id}_${activeWorkspace._id}_true`}
+             state={{ workspace: activeWorkspace, isCaller: true }}
+             className="option flex items-center gap-3 p-3 hover:bg-gray-100 rounded-md cursor-pointer"
+           >
+             <i className="ri-user-voice-fill text-lg text-green-600"></i>
+             <p className="text-sm font-medium text-gray-700">Call</p>
+           </Link>
+           
             )}
           </div>
         </div>
