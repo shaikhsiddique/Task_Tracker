@@ -127,10 +127,7 @@ function Navbar({ user }) {
               <i className="ri-admin-line text-xl rounded-full px-1"></i>
               <p className="text-sm md:text-md">Admin of</p>
             </Link>
-            <Link to="/workspace/join-workspace" className={`flex items-center justify-start gap-2 w-[99%] p-[3px] -my-1 rounded-md cursor-pointer ${isActive("/workspace/join") ? "bg-red-500 text-white" : "hover:bg-red-400"}`}>
-              <i className="ri-user-add-line text-xl rounded-full px-1"></i>
-              <p className="text-sm md:text-md">Collaboration</p>
-            </Link>
+            
           </div>
         </div>
       </div>
