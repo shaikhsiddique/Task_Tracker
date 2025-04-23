@@ -68,12 +68,20 @@ function Login() {
             Login
           </button>
         </form>
-        <Link
-          to="/signup"
-          className="text-sm text-gray-200 mt-4 hover:text-blue-400 transition"
-        >
-          Don’t have an account? Sign up
-        </Link>
+        <div className="flex flex-col items-center space-y-2 mt-4">
+          <Link
+            to="/forget-password"
+            className="text-sm text-gray-200 hover:text-blue-400 transition"
+          >
+            Forgot Password?
+          </Link>
+          <Link
+            to="/signup"
+            className="text-sm text-gray-200 hover:text-blue-400 transition"
+          >
+            Don't have an account? Sign up
+          </Link>
+        </div>
       </div>
     </div>
   );

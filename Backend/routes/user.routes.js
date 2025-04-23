@@ -34,4 +34,14 @@ router.delete('/:id',auth, async (req,res)=>{
     userController.deleteProfileController(req,res);
 })
 
+
+router.post('/send-otp', async (req, res) => {
+    userController.sendOtpController(req, res);
+});
+
+
+router.post('/reset-password', async (req, res) => {
+    userController.resetPasswordController(req, res);
+});
+
 module.exports = router;

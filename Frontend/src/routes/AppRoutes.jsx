@@ -3,6 +3,7 @@ import {Route ,BrowserRouter,Routes} from 'react-router-dom'
 import Home from '../pages/Home'
 import Login from '../pages/Login'
 import SignUp from '../pages/SignUp'
+import ForgetPassword from '../pages/Forget-Password'
 import UserAuth from '../auth/UserAuth'
 import Logout from '../pages/Logout'
 import Today_Tasks from '../components/Side-Pages/Today-Tasks'
@@ -53,6 +54,8 @@ function AppRoutes() {
         <Route path='/login' element={<Login/>}/>
         <Route path='/signup' element={<SignUp/>}/>
         <Route path='/logout' element={<Logout/>}/>
+        <Route path='/forget-password' element={<ForgetPassword/>}/>
+
     </Routes>
     </BrowserRouter>
   )
