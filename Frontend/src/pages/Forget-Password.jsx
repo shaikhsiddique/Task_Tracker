@@ -4,7 +4,6 @@ import PasswordInput from '../components/Mini-Pages/PasswordInput';
 
 function ForgetPassword() {
   const [isOtpVerified, setIsOtpVerified] = useState(false);
-  console.log(isOtpVerified)
   const handleOtpSubmit = () => {
     setIsOtpVerified(true);  // OTP verified, show the password fields
   };
