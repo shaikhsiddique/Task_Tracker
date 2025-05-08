@@ -41,6 +41,26 @@ Access the live demo here: [https://task-tracker-cyan-alpha.vercel.app/](https:/
 ### Login & Signup
 Users can securely register and log in using their email and password. Authentication is managed via JWT tokens.
 
+### 🔐 Forgot Password
+
+If a user forgets their password, they can easily reset it by following these steps:
+
+1. **Click "Forgot Password"**  
+   On the login page, click the **"Forgot Password?"** option below the login form.
+
+2. **Enter Email or Phone Number**  
+   You'll be prompted to enter your registered **email** or **phone number**.
+
+3. **Receive OTP**  
+   An **OTP (One-Time Password)** will be sent to your email or phone.
+
+4. **Verify OTP**  
+   Enter the OTP on the verification screen to proceed.
+
+5. **Reset Password**  
+   Once verified, you'll be able to set a **new password**.  
+   After resetting, use the new password to log in.
+
 ## Task Management
 
 ### Create Task
