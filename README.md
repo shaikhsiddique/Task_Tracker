@@ -159,7 +159,7 @@ The account page displays:
 
 Clone the repository to get started with Task Tracker:
 ```bash
-git clone https://github.com/username/task-tracker.git
+git clone https://github.com/shaikhsiddique/Task_Tracker
 ```
 
 Alternatively, download it directly from GitHub: [Download Task Tracker](https://github.com/shaikhsiddique/Task_Tracker)
