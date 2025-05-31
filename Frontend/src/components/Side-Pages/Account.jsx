@@ -23,8 +23,6 @@ function Account() {
     const incompleteTaskPoints = 100;
     const workspacePoints = 40;
     const productivityChange = completedTasks * completedTaskPoints - incompleteTasks * incompleteTaskPoints + activeWorkspaces * workspacePoints;
-    console.log(activeWorkspaces, assignedTasks, completedTasks, incompleteTasks)
-    console.log(productivityChange)
     return Math.max(0, basePoints + productivityChange);
   }
 
@@ -69,6 +67,20 @@ function Account() {
       day: "numeric",
     });
 
+    function getProductivityColor(points) {
+      if (points === 1000) return '#808080';
+      const orangeToRedShades = ['#ffb300', '#ff9800', '#ff6d00', '#ff5722', '#f44336', '#e53935', '#d32f2f', '#c62828', '#b71c1c'];
+      const limeToDarkGreenShades = ['#cddc39', '#aeea00', '#9ccc65', '#8bc34a', '#4caf50', '#43a047', '#388e3c', '#2e7d32', '#1b5e20'];
+      const diff = Math.abs(points - 1000);
+      const tiers = [100, 200, 250, 300, 350, 400, 450, 500];
+      let index = 0;
+      for (let i = 0; i < tiers.length; i++) {
+        if (diff > tiers[i]) index = i + 1;
+      }
+      index = Math.min(index, orangeToRedShades.length - 1);
+      return points < 1000 ? orangeToRedShades[index] : limeToDarkGreenShades[index];
+    }
+
   return (
     <div className="h-full w-full bg-[#FFFFFF] flex items-center justify-center overflow-y-auto relative">
       <div className="w-full max-w-4xl p-6 bg-gray-50 rounded-lg shadow-lg flex flex-col">
@@ -88,7 +100,10 @@ function Account() {
             </div>
           </div>
           <div className="relative md:right-10 -right-3">
-            <div className="md:w-32 w-28 h-28 md:h-32 rounded-full border-4 border-green-500 flex items-center justify-center text-lg font-bold text-green-500">
+            <div style={{
+                borderColor: getProductivityColor(productivity),
+                color: getProductivityColor(productivity)
+              }} className="md:w-32 w-28 h-28 md:h-32 rounded-full border-4 border-green-500 flex items-center justify-center text-lg font-bold text-green-500">
               {productivity ? `${productivity} pts` : "N/A"}
             </div>
             <p className="text-md font-semibold text-gray-600 text-center mt-2">Productivity</p>

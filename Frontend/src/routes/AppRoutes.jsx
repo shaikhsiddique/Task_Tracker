@@ -26,6 +26,8 @@ import Workspace_Page from '../components/Side-Pages/Workspace-Page'
 import Assign_Task from '../components/Side-Pages/Assign-Task'
 import Remove_User from '../components/Side-Pages/Remove-User'
 import Call from '../components/Side-Pages/Call'
+import Collaboration from '../components/Side-Pages/Collaboration'
+import Profile from '../components/Side-Pages/Profile'
 
 function AppRoutes() {
   
@@ -51,6 +53,9 @@ function AppRoutes() {
         <Route path='/workspace/delete/:id' element={<UserAuth><Home><Delete_Workspace/></Home></UserAuth>}/>
         <Route path='/workspace/remove/:id' element={<UserAuth><Home><Remove_User/></Home></UserAuth>}/>
         <Route path='/collaboration/call/:id' element={<UserAuth><Home><Call/></Home></UserAuth>}/>
+        <Route path='/collaboration/call/:id' element={<UserAuth><Home><Call/></Home></UserAuth>}/>
+        <Route path='/collaboration/' element={<UserAuth><Home><Collaboration/></Home></UserAuth>}/>
+        <Route path='/collaboration/:id' element={<UserAuth><Home><Profile/></Home></UserAuth>}/>
         <Route path='/login' element={<Login/>}/>
         <Route path='/signup' element={<SignUp/>}/>
         <Route path='/logout' element={<Logout/>}/>

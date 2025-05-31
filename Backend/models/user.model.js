@@ -42,7 +42,7 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Notification",
         default: null
-    }]
+    }],
 }, { timestamps: true });
 
 userSchema.post('save', function(error, doc, next) {
