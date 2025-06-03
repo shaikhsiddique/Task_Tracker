@@ -82,10 +82,10 @@ function Profile() {
 
   return (
     <div className="h-full w-full bg-[#FFFFFF] flex items-center justify-center overflow-y-auto relative">
-        <i onClick={()=>{ navigate(-1)}} className="ri-arrow-left-long-line absolute text-2xl top-[30%] left-[14%] z-50 cursor-pointer"></i>
+        <i onClick={()=>{ navigate(-1)}} className="ri-arrow-left-long-line absolute text-2xl sm:top-[30%] top-[27%] sm:left-[14%] left-[6%] z-50 cursor-pointer"></i>
       <div className="w-full max-w-4xl p-6 bg-gray-50 rounded-lg shadow-lg flex flex-col">
-        <div className="flex justify-between items-center mb-6 p-10">
-          <div className="flex items-center md:gap-4 gap-2">
+        <div className="flex justify-between items-center mb-6 md:p-10 py-10">
+          <div className="md:flex flex-col items-center md:gap-4 gap-2">
             <div className="md:w-32 w-20 h-20 md:h-32 rounded-full overflow-hidden border-2 border-gray-300 z-40">
               <img
                 src={profileData.profileimg}
