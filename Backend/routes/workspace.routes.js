@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const router = Router();
 const auth = require('../middleware/userAuth');
+const upload = require('../config/multer')
 const workspaceController = require('../controller/workspace.controller');
 
 router.get('/all',auth,async (req,res)=>{
@@ -16,7 +17,6 @@ router.post('/create',auth,async (req,res)=>{
 router.post('/add-member',auth,async (req,res)=>{
     workspaceController.addMembersController(req,res);
 })
-
 router.post('/remove-member',auth,async (req,res)=>{
     workspaceController.removeMemberController(req,res);
 })

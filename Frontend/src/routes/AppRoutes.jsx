@@ -28,6 +28,7 @@ import Remove_User from '../components/Side-Pages/Remove-User'
 import Call from '../components/Side-Pages/Call'
 import Collaboration from '../components/Side-Pages/Collaboration'
 import Profile from '../components/Side-Pages/Profile'
+import Assign_File from '../components/Side-Pages/Assign-File'
 
 function AppRoutes() {
   
@@ -54,6 +55,7 @@ function AppRoutes() {
         <Route path='/workspace/remove/:id' element={<UserAuth><Home><Remove_User/></Home></UserAuth>}/>
         <Route path='/collaboration/call/:id' element={<UserAuth><Home><Call/></Home></UserAuth>}/>
         <Route path='/collaboration/call/:id' element={<UserAuth><Home><Call/></Home></UserAuth>}/>
+        <Route path='/collaboration/assign-file/:id' element={<UserAuth><Home><Assign_File/></Home></UserAuth>}/>
         <Route path='/collaboration/' element={<UserAuth><Home><Collaboration/></Home></UserAuth>}/>
         <Route path='/collaboration/:id' element={<UserAuth><Home><Profile/></Home></UserAuth>}/>
         <Route path='/login' element={<Login/>}/>

@@ -2,10 +2,11 @@ const {Router} = require('express');
 const auth = require('../middleware/userAuth');
 const router = Router();
 const notificationController = require('../controller/notification.controller');
+const upload = require('../config/multer');
 
 
 
-router.post("/create",auth,async (req,res)=>{
+router.post("/create",auth,upload,async (req,res)=>{
     notificationController.createNotification(req,res);
 })
 
@@ -16,6 +17,7 @@ router.get('/all',auth,async (req,res)=>{
 router.get('/:id',auth,async(req,res)=>{
     notificationController.getNotificationById(req,res);
 })
+
 
 router.delete("/:id",auth,async (req,res)=>{
     notificationController.deleteNotification(req,res);

@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "../config/axios";
 import { UserContext } from "../context/UserContext";
+import { Link } from "react-router-dom";
 
 function Notification({ notificationId, setrefresh }) {
   const token = localStorage.getItem("Auth-Token");
@@ -79,7 +80,7 @@ function Notification({ notificationId, setrefresh }) {
         { workspaceId: notification.data.workspace._id, memberIds: [memberId] },
         { headers: { Authorization: `Bearer ${token}` } }
       )
-      .then((res) => console.log(res.data))
+      .then()
       .catch((err) => console.log(err));
 
     axios
@@ -88,7 +89,7 @@ function Notification({ notificationId, setrefresh }) {
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       )
-      .then((res) => console.log(res.data))
+      .then()
       .catch((err) => console.log(err));
       window.location.reload();
   };
@@ -98,7 +99,7 @@ function Notification({ notificationId, setrefresh }) {
       .delete(`/notification/${notificationId}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      .then((res) => console.log(res.data))
+      .then()
       .catch((err) => console.log(err));
       setrefresh(true);
       window.location.reload();
@@ -109,10 +110,12 @@ function Notification({ notificationId, setrefresh }) {
       <p className="text-gray-800 text-sm font-medium flex-1">{notification?.message}</p>
       <p className="text-sm text-gray-500">{timeAgo}</p>
       <div className="flex items-center gap-3 ml-4 text-gray-500">
+      { notification?.link === null ? '': <Link to={notification.link} className="ri-file-download-fill text-xl cursor-pointer hover:text-red-800 transition duration-200"></Link>}
         {notification?.type === "request" && !notification?.isMarked && (
           <i onClick={handleAccept} className="ri-check-line text-xl cursor-pointer hover:text-green-600 transition duration-200"></i>
         )}
         <i onClick={handleDelete} className="ri-delete-bin-line text-xl cursor-pointer hover:text-red-600 transition duration-200"></i>
+
       </div>
     </div>
   );

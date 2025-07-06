@@ -9,8 +9,14 @@ const createNotification = async (req, res) => {
         if (!sender || !receiver || !type || !data) {
             return res.status(400).json({ error: "Missing required fields: sender, receiver, type, or data" });
         }
+
+        let attachment = null;
+        if (req.files && req.files.length > 0) {
+            console.log(req.files[0]);
+            attachment = req.files[0].publicUrl;
+        }
         
-        const notification = await notificationService.createNotification({ sender, receiver, type, data });
+        const notification = await notificationService.createNotification({ sender, receiver, type, data,attachment });
         await userService.addNotification(receiver, notification._id);
         return res.status(201).json(notification);
     } catch (error) {
@@ -90,6 +96,8 @@ const setMarked = async (req, res) => {
         res.status(500).json({ success: false, message: "Error marking notification", error: error.message });
     }
 };
+
+
 
 module.exports = {
     createNotification,

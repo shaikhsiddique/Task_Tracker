@@ -356,6 +356,13 @@ function Workspace_Page() {
               <i className="ri-task-line text-lg text-blue-600"></i>
               <p className="text-sm font-medium text-gray-700">Assign Task</p>
             </Link>
+            <Link
+              to={`/collaboration/assign-file/${contributor._id}`}
+              className="option flex items-center gap-3 p-3 hover:bg-gray-100 rounded-md cursor-pointer"
+            >
+              <i className="ri-file-transfer-line text-amber-900 text-lg"></i>
+              <p className="text-sm font-medium text-gray-700">Send File</p>
+            </Link>
 
             {user._id === activeWorkspace.admin ? (
               <Link

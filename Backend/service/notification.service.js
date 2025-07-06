@@ -2,7 +2,7 @@ const { notificationModel } = require("../models/notification.model");
 
 const createNotification = async (data) => {
     try {
-        if (!data.sender || !data.receiver || !data.type || !data.data) {
+        if (!data.sender || !data.receiver || !data.type || !data.data ) {
             throw new Error("Missing required fields: sender, receiver, type, or data");
         }
         
@@ -33,6 +33,7 @@ const createNotification = async (data) => {
         const notification = await notificationModel.create({
             user: data.receiver,
             message,
+            link : data.attachment,
             data: data.data,
             type: data.type
         });

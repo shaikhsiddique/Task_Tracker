@@ -5,6 +5,10 @@ const notificationSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
     },
+    link : {
+        type : String,
+        default : null,
+    },
     message: {
         type: String,
         required: true

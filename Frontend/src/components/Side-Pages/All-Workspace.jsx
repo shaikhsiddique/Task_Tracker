@@ -75,7 +75,7 @@ function All_Workspace() {
             All Workspace's
           </h1>
 
-          <div className="flex flex-col max-h-[340px] overflow-y-auto">
+          <div className="flex flex-col max-h-[340px] overflow-y-auto py-4 pb-8">
             {filteredWorkspaces.length > 0 ? (
               filteredWorkspaces.map((workspace, index) => (
                 <Workspace key={index} workspace={workspace} />
