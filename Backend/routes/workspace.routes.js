@@ -23,5 +23,11 @@ router.post('/remove-member',auth,async (req,res)=>{
 router.delete('/:id',auth,async (req,res)=>{
     workspaceController.deleteWorkspaceController(req,res)
 })
+router.post('/chat/:id', async (req,res)=>{
+    workspaceController.saveChatController(req,res);
+})
+router.get('/chat/:id',auth, async (req,res)=>{
+    workspaceController.getChatController(req,res);
+})
 
 module.exports = router;

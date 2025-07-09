@@ -117,5 +117,33 @@ const removeMember = async (workspaceId, memberId) => {
     }
 };
 
+const saveChat = async (id, data) => {
+    try {
+      const workspace = await workspaceModel.findById(id);
+      if (!workspace) {
+        return { status: 404, json: { message: "Workspace not found" } };
+      }
+      if (!Array.isArray(data) || data.length === 0) {
+        return { status: 400, json: { message: "No messages to save" } };
+      }
+      workspace.chat.push(...data);
+      await workspace.save();
+      return { status: 200, json: { message: "Chat saved successfully" } };
+    } catch (error) {
+      return { status: 500, json: { message: "Internal server error" } };
+    }
+  };
+  const getChat = async (id) => {
+    try {
+      const workspace = await workspaceModel.findById(id).select("chat");
+      if (!workspace) {
+        return { status: 404, json: { message: "Workspace not found" } };
+      }
+      return { status: 200, json: workspace.chat };
+    } catch (error) {
+      return { status: 500, json: { message: "Internal server error" } };
+    }
+  };
+    
 
-module.exports = { getByName, getById, getAll, create, deleteWorkspace, addMember ,removeMember};
+module.exports = { getByName, getById, getAll, create, deleteWorkspace, addMember ,removeMember , saveChat,getChat};

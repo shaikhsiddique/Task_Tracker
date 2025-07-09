@@ -100,6 +100,29 @@ const removeMemberController = async (req,res) => {
     }
 } 
 
+const saveChatController = async (req, res) => {
+    try {
+      const { data } = req.body;
+      const { id } = req.params;
+      const result = await workspaceService.saveChat(id, data);
+      return res.status(result.status).json(result.json);
+    } catch (error) {
+      console.error("Error in saveChatController:", error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  };
+  
+  const getChatController = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const result = await workspaceService.getChat(id);
+      return res.status(result.status).json(result.json);
+    } catch (error) {
+      console.error("Error in getChatController:", error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  };
+  
 
 
 
@@ -110,4 +133,6 @@ module.exports = {
     deleteWorkspaceController, 
     addMembersController,
     removeMemberController ,
+    saveChatController,
+    getChatController
 };

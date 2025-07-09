@@ -11,7 +11,6 @@ import {
   receiveMessage,
   listenForCallRequest,
 } from "../../config/socket";
-import { use } from "react";
 import Markdown from "react-markdown";
 import ReactDOM from "react-dom";
 import { WorkSpaceContext } from "../../context/WorkSpaceContext";
@@ -38,18 +37,20 @@ function Workspace_Page() {
 
 
   const handleSubmit = (e) => {
-    if (message === "") {
-      return;
-    }
+    e.preventDefault();
+    if (message === "") return;
+  
     const data = {
       message,
       sender: user,
+      time: new Date()
     };
+  
     setMessage("");
-    e.preventDefault();
     sendMessage("workspace-message", data);
     appendSendMessage(data);
   };
+  
 
   const renderMessageContent = (msg) => {
     if (msg.sender.id === "ai") {
@@ -100,7 +101,7 @@ function Workspace_Page() {
   };
 
   const appendReceiveMessage = (data) => {
-    if (data.sender._id === user._id) {
+    if (data.sender._id == user._id) {
       appendSendMessage(data);
       return null;
     }
@@ -193,6 +194,7 @@ function Workspace_Page() {
       });
     });
 
+
     const messageHandler = (data) => {
       if (data.sender.id === user?._id) {
         appendSendMessage(data);
@@ -210,6 +212,30 @@ function Workspace_Page() {
     };
   }, [activeWorkspace?._id, user]);
 
+  useEffect(()=>{
+    axois
+    .get(`/workspace/chat/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((res)=>{
+
+      res.data.map((data)=>{
+        
+        
+        if (data.sender.id === user?._id) {
+          appendSendMessage(data);
+        } else {
+          appendReceiveMessage(data);
+        }
+      })
+      
+        
+        
+    }).catch((err)=>{
+      console.log(err);
+    })
+  },[token,id])
 
   useEffect(() => {
     const handleResize = () => {

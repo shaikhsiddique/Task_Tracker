@@ -3,15 +3,25 @@ const Joi = require('joi');
 
 const chatSchema = new mongoose.Schema({
     message: {
-        type: String,
-        required: true
+      type: String,
+      required: true
     },
     sender: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref : "User    "
+        id:{
+            type: mongoose.Schema.Types.Mixed,
+            required: true,
+            ref: "User"
+          },
+        username:{
+            type:String,
+            required:true
+        }
+    },
+    time: {
+      type: Date,
+      default: Date.now
     }
-});
+  });
 
 const workspaceSchema = new mongoose.Schema({
     name: {
