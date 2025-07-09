@@ -49,6 +49,7 @@ io.on("connection", (socket) => {
     connectedUsers[socket.user.id] = socket.id;
   });
   socket.on("workspace-message", async (data) => {
+    console.log(data);
     const { message, sender, time } = data;
     const workspaceId = socket.roomId;
   
@@ -62,6 +63,7 @@ io.on("connection", (socket) => {
     socket.broadcast.to(workspaceId).emit("workspace-message", data);
     messageBuffer.get(workspaceId).push({
       message,
+      type: data.type,
       sender: formattedSender,
       time,
     });
@@ -121,6 +123,11 @@ io.on("connection", (socket) => {
   });
 });
 
+function sendFileBySocket(workspaceId, chatData) {
+  io.to(workspaceId).emit("workspace-message", chatData);
+}
+
+
 setInterval(async () => {
   for (const [workspaceId, messages] of messageBuffer.entries()) {
     if (!messages.length) continue;
@@ -145,4 +152,9 @@ setInterval(async () => {
 server.listen(port, () => {
   console.log("server runing on ", port);
 });
-module.exports = server;
+
+
+module.exports = {
+  server,
+  sendFileBySocket
+};

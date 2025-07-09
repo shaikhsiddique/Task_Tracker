@@ -29,5 +29,8 @@ router.post('/chat/:id', async (req,res)=>{
 router.get('/chat/:id',auth, async (req,res)=>{
     workspaceController.getChatController(req,res);
 })
+router.post('/send-file/:id',auth,upload, async (req,res)=>{
+    workspaceController.sendFileController(req,res);
+})
 
 module.exports = router;

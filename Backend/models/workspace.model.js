@@ -6,6 +6,10 @@ const chatSchema = new mongoose.Schema({
       type: String,
       required: true
     },
+    type:{
+        type: String,
+        default : "message"
+    },
     sender: {
         id:{
             type: mongoose.Schema.Types.Mixed,
