@@ -3,6 +3,7 @@ import { UserContext } from "../../context/UserContext";
 import Setting from "../Mini-Pages/Setting";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import ProductivityHeatmap from "../Mini-Pages/ProductivityHeatmap";
 
 function Account() {
   const { user } = useContext(UserContext);
@@ -82,7 +83,8 @@ function Account() {
     }
 
   return (
-    <div className="h-full w-full bg-[#FFFFFF] flex items-center justify-center overflow-y-auto relative">
+   <div className="flex h-full w-full flex-col overflow-y-auto bg-[#FFFFFF]">
+    <div className="h-[100vh] w-full flex flex-col items-center justify-center  relative mt-32">
       <div className="w-full max-w-4xl p-6 bg-gray-50 rounded-lg shadow-lg flex flex-col">
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center md:gap-4 gap-2">
@@ -141,6 +143,11 @@ function Account() {
         </div>
       )}
     </div>
+    <div className="w-full h-full flex items-center justify-center my-12">
+    <ProductivityHeatmap user={user}/>
+
+    </div>
+   </div>
   );
 }
 

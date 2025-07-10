@@ -80,6 +80,7 @@ const markComplete = async (id,userId) => {
         }
         
         task.status = "completed";
+        task.completedAt = new Date();
         await task.save();
         return task;
     } catch (error) {
