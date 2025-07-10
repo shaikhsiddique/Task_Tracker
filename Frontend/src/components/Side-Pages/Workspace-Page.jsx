@@ -14,6 +14,7 @@ import {
 import Markdown from "react-markdown";
 import ReactDOM from "react-dom";
 import { WorkSpaceContext } from "../../context/WorkSpaceContext";
+import { toast } from 'react-toastify';
 
 function Workspace_Page() {
   const { id } = useParams();
@@ -79,6 +80,22 @@ function Workspace_Page() {
     );
   };
 
+  const formatMessageTime = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const isToday =
+      date.getDate() === now.getDate() &&
+      date.getMonth() === now.getMonth() &&
+      date.getFullYear() === now.getFullYear();
+    const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    if (isToday) {
+      return time;
+    } else {
+      const day = date.toLocaleDateString();
+      return `${day} ${time}`;
+    }
+  };
+
   const appendSendMessage = (data) => {
     const messageElement = document.createElement("div");
   
@@ -120,8 +137,15 @@ function Workspace_Page() {
     }
   
     messageElement.appendChild(messageTextElement);
+    // Add date/time below the message
+    const timeElement = document.createElement("div");
+    timeElement.className = "text-gray-400 text-[8px] mt-1 text-right";
+    timeElement.textContent = formatMessageTime(data.time || data.createdAt);
+    messageElement.appendChild(timeElement);
     messageBox.current.appendChild(messageElement);
-    scrollToBottom()
+    setTimeout(() => {
+      requestAnimationFrame(scrollToBottom);
+    }, 100); // <-- Ensures scroll after DOM update
   };
   
 
@@ -156,9 +180,15 @@ function Workspace_Page() {
     const renderedContent = renderMessageContent(data);
     ReactDOM.render(renderedContent, messageTextElement);
     messageElement.appendChild(messageTextElement);
+    // Add date/time below the message
+    const timeElement = document.createElement("div");
+    timeElement.className = "text-gray-400 text-[8px] mt-1 text-right";
+    timeElement.textContent = formatMessageTime(data.time || data.createdAt);
+    messageElement.appendChild(timeElement);
     messageBox.current.appendChild(messageElement);
-
-    scrollToBottom();
+    setTimeout(() => {
+      requestAnimationFrame(scrollToBottom);
+    }, 100); // <-- Ensures scroll after DOM update
   };
 
   useEffect(() => {
@@ -195,13 +225,6 @@ function Workspace_Page() {
       });
     }
   }, [showAddUser]);
-
-  useEffect(() => {
-    if (conversationArea.current) {
-      conversationArea.current.scrollTop =
-        conversationArea.current.scrollHeight;
-    }
-  }, [message]);
 
   useEffect(() => {
     if (!activeWorkspace || !activeWorkspace._id) {
@@ -248,11 +271,9 @@ function Workspace_Page() {
             appendReceiveMessage(data);
           }
         });
-      
         setTimeout(() => {
-          scrollToBottom();
-        }, 50); 
-        
+          requestAnimationFrame(scrollToBottom);
+        }, 0); // <-- Ensures scroll after all messages loaded
       })
       .catch((err) => {
         console.log(err);
@@ -290,56 +311,63 @@ function Workspace_Page() {
   
 
   const sendFile = () => {
-    const fileInput = document.createElement("input");
-    fileInput.type = "file";
-    fileInput.accept = "*/*";
-    fileInput.click();
+  const fileInput = document.createElement("input");
+  fileInput.type = "file";
+  fileInput.accept = "image/*"; // Only allow image files
+  fileInput.click();
 
-    fileInput.onchange = async () => {
-      const file = fileInput.files[0];
-      if (!file || !user || !activeWorkspace?._id) return;
+  fileInput.onchange = async () => {
+    const file = fileInput.files[0];
+    if (!file || !user || !activeWorkspace?._id) return;
 
-      const formData = new FormData();
-      formData.append("file", file);
+    const validImageTypes = ["image/png", "image/jpeg", "image/jpg", "image/gif", "image/webp"];
+    if (!validImageTypes.includes(file.type)) {
+      toast.error("Please select a valid image file!");
+      return;
+    }
 
-      const sender = {
-        _id: user._id,
-        username: user.username,
-      };
+    const formData = new FormData();
+    formData.append("file", file);
 
-      formData.append("sender", JSON.stringify(sender));
-      formData.append("workspaceId", activeWorkspace._id);
-
-      try {
-        const res = await axois.post(`/workspace/send-file/${id}`, formData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const result = res.data;
-
-        if (res.status === 200) {
-          const messageData = {
-            message: result.message || file.name,
-            type: "image",
-            sender: user,
-            time: new Date(),
-          };
-
-          sendMessage("workspace-message", messageData);
-          appendSendMessage(messageData);
-        }
-      } catch (err) {
-        console.error("File upload failed:", err.message);
-      }
+    const sender = {
+      _id: user._id,
+      username: user.username,
     };
+
+    formData.append("sender", JSON.stringify(sender));
+    formData.append("workspaceId", activeWorkspace._id);
+
+    try {
+      const res = await axois.post(`/workspace/send-file/${id}`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const result = res.data;
+
+      if (res.status === 200) {
+        const messageData = {
+          message: result.message || file.name,
+          type: "image",
+          sender: user,
+          time: new Date(),
+        };
+
+        sendMessage("workspace-message", messageData);
+        appendSendMessage(messageData);
+      }
+    } catch (err) {
+      console.error("File upload failed:", err.message);
+    }
   };
+};
+
 
 
   const scrollToBottom = () => {
     if (messageBox.current) {
-      messageBox.current.scrollTop = messageBox.current.scrollHeight ;
+      messageBox.current.scrollTop = messageBox.current.scrollHeight;
     }
   };
   
@@ -389,7 +417,7 @@ function Workspace_Page() {
       <section className="h-full w-full">
         <div
           ref={conversationArea}
-          className="conversation-area h-full flex-grow flex flex-col "
+          className="conversation-area flex-grow flex flex-col overflow-y-auto h-[calc(100vh-64px)] md:h-full"
         >
           <div className="title w-full flex items-center md:justify-center justify-evenly border-b-2 bg-black">
             {!showSidePanel ? (
@@ -408,7 +436,7 @@ function Workspace_Page() {
           </div>
           <div
             ref={messageBox}
-            className="message-box flex-grow flex flex-col gap-1 p-2 bg-white overflow-y-auto "
+            className="message-box md:h-[80vh] h-[63vh] flex flex-col gap-1 p-2 bg-white overflow-y-auto "
           >
             {activeWorkspace.messages &&
               activeWorkspace.messages.map((msg, index) => (
