@@ -14,7 +14,7 @@ import {
 import Markdown from "react-markdown";
 import ReactDOM from "react-dom";
 import { WorkSpaceContext } from "../../context/WorkSpaceContext";
-import { toast } from 'react-toastify';
+
 
 function Workspace_Page() {
   const { id } = useParams();
@@ -322,7 +322,7 @@ function Workspace_Page() {
 
     const validImageTypes = ["image/png", "image/jpeg", "image/jpg", "image/gif", "image/webp"];
     if (!validImageTypes.includes(file.type)) {
-      toast.error("Please select a valid image file!");
+      console.log("Please select a valid image file!");
       return;
     }
 
